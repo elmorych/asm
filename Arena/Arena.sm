@@ -1,0 +1,9369 @@
+112[::]0[::]0[::]1[::]true[::]html
+:: StoryTitle[::]144-8-1
+
+Арена
+
+:: StoryMenu[::]528-8-1
+
+
+
+:: СбросЛевой[::]1240-160-4
+
+<<set $weapL = "Кулак">>
+
+<<set $wl_att = 0>>
+
+<<set $wl_str = 0>>
+
+<<set $wl_dex = 0>>
+
+<<set $wl_int = 0>>
+
+<<set $wl_hpMax = 0>>
+
+<<set $wl_ddg = 0>>
+
+<<set $wl_spd = 0>>
+
+<<set $wl_par = 0>>
+
+<<set $wl_blk = 0>>
+
+<<set $wl_def = 0>>
+
+:: Отдых[::]984-312-0
+
+<<clrscr>>
+
+<<fade = 400>>
+
+===''Отдых''===
+
+----
+
+# Величина восстанавливаемого здоровья
+
+<<set $restHp = 0>>
+
+# Величина теряемой славы
+
+<<set $restGlory = 0>>
+
+<<if $hp lt $hpMax>>
+
+	<<if $fastRest>>
+
+		# Быстрый отдых
+
+		<<set $restHp = $hpMax - $hp>>
+
+	<<else>>
+
+		# Восстанавливается до 15% здоровья за раз
+
+		<<random $rnd = 15>>
+
+		<<set $restHp = Math.round($hpMax * $rnd / 100)>>
+
+		# Минимум +1 здоровья
+
+		<<set $restHp = Math.max(1, $restHp)>>
+
+		# Не слишком много ли восстанавливается
+
+		<<if $hp + $restHp gt $hpMax>>
+
+			<<set $restHp = $hpMax - $hp>>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<set $hp = $hp + $restHp>>
+
+	<<if $glory gt 0>>
+
+		<<if $fastRest>>
+
+			# Теряем до 55% славы при быстром отдыхе
+
+			<<random $rnd = 55>>
+
+		<<else>>
+
+			# Теряем до 5% славы
+
+			<<random $rnd = 5>>
+
+		<<endif>>
+
+		<<set $restGlory = Math.round($glory * $rnd / 100)>>
+
+		# Минимум -1 славы
+
+		<<set $restGlory = Math.max(1, $restGlory)>>
+
+		# Не слишком ли много отнимаем
+
+		<<if $glory - $restGlory lt 0>>
+
+			<<set $restGlory = -$glory>>
+
+		<<endif>>
+
+		<<set $glory = $glory - $restGlory>>
+
+	<<endif>>
+
+<<endif>>
+
+<<set $pr_value = $hp>>
+
+<<set $pr_valueMax = $hpMax>>
+
+<<display 'ИндикаторПроцесса'>>
+
+{{{&nbsp;&nbsp;Здоровье: <<print $pr_text>>}}} ''<<print $hp>>'' / ''<<print $hpMax>>''
+
+{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Слава: }}}''<<print $glory>>''
+
+<<random $rnd = 14>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = "отдыхает и набирается сил">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = "спит, служба идёт">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = "моется в купальнях">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = "хочет принять ванну и выпить чашечку кофе">>
+
+<<elseif $rnd eq 4>>
+
+	<<set $text1 = "меняет повязки на ранах">>
+
+<<elseif $rnd eq 5>>
+
+	<<set $text1 = "умащивает тело маслами и благовониями">>
+
+<<elseif $rnd eq 6>>
+
+	<<set $text1 = "поглощает пищу">>
+
+<<elseif $rnd eq 7>>
+
+	<<set $text1 = "думает о вечном">>
+
+<<elseif $rnd eq 8>>
+
+	<<set $text1 = "вспоминает самые яркие моменты сражений">>
+
+<<elseif $rnd eq 9>>
+
+	<<set $text1 = "донимает лекаря расспросами">>
+
+<<elseif $rnd eq 10>>
+
+	<<set $text1 = "наедается впрок">>
+
+<<elseif $rnd eq 11>>
+
+	<<set $text1 = "смазывает раны целебной мазью">>
+
+<<elseif $rnd eq 12>>
+
+	<<set $text1 = "ставит припарки">>
+
+<<elseif $rnd eq 13>>
+
+	<<set $text1 = "мечтает о новых победах">>
+
+<<elseif $rnd eq 14>>
+
+	<<set $text1 = "стирает сублигакулум">>
+
+<<endif>>
+
+<<if $hp eq $hpMax>>
+
+	<<stop 'Отдых'>>
+
+	===''//<<print $name>> полностью восстанавливает свои силы!//''===
+
+<<else>>
+
+	===<<print $name>> <<print $text1>>...===
+
+<<endif>>
+
+<<if $restHp gt 0>>
+
+	===Восстановлено ''+<<print $restHp>>'' здоровья.===
+
+	<<if $restGlory gt 0>>
+
+		===Утрачено ''-<<print $restGlory>>'' славы.===
+
+	<<endif>>
+
+<<endif>>
+
+----
+
+<<if $hp lt $hpMax>>
+
+	===''[[+Быстро восстановить силы|Отдых {$fastRest = true}]]''===
+
+	===''[[-Прервать отдых|ЛистПерсонажа]]''===
+
+<<else>>
+
+	===''[[-Закончить отдых|ЛистПерсонажа]]''===
+
+<<endif>>
+
+:: Отдать[::]1384-128-0
+
+<<fade = 400>>
+
+<<if $tab eq 0>>
+
+	<<set $weapon = $invHar[$i]>>
+
+	<<display 'ПараметрыОружия'>>
+
+	<<set $text2 = $inv[$i]>>
+
+<<else>>
+
+	<<set $weapon = $invAHar[$i]>>
+
+	<<display 'ПараметрыБрони'>>
+
+	<<set $text2 = $invA[$i]>>
+
+<<endif>>
+
+<<set $tmp = Math.round($w_hpMax / 10)>>
+
+<<set $tmp = $tmp + $w_str * 2>>
+
+<<set $tmp = $tmp + $w_dex * 2>>
+
+<<set $tmp = $tmp + $w_int * 2>>
+
+<<set $tmp = $tmp + $w_att>>
+
+<<set $tmp = $tmp + $w_def>>
+
+<<set $tmp = $tmp + $w_spd>>
+
+<<set $tmp = $tmp + $w_ddg>>
+
+<<set $tmp = $tmp + $w_blk>>
+
+<<set $tmp = $tmp + $w_par>>
+
+<<set $tmp = Math.max(1, $tmp)>>
+
+<<set $glory = $glory + $tmp>>
+
+<<if $tab eq 0>>
+
+	<<set $weapon = $inv.splice($i, 1)>>
+
+	<<set $weapon = $invHar.splice($i, 1)>>
+
+	<<if $wr eq $i>>
+
+		<<set $wr = 0>>
+
+		<<display 'СбросПравой'>>
+
+		<<if $wl eq -1>>
+
+			<<set $wl = 0>>
+
+			<<display 'СбросЛевой'>>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<if $wl eq $i>>
+
+		<<set $wl = 0>>
+
+		<<display 'СбросЛевой'>>
+
+	<<endif>>
+
+	<<if $wr gt $i>>
+
+		<<set $wr = $wr - 1>>
+
+	<<endif>>
+
+	<<if $wl gt $i>>
+
+		<<set $wl = $wl - 1>>
+
+	<<endif>>
+
+	<<if $pageW gte $inv.length>>
+
+		<<set $pageW = $pageW - 5>>
+
+	<<endif>>
+
+<<else>>
+
+	<<set $weapon = $invA.splice($i, 1)>>
+
+	<<set $weapon = $invAHar.splice($i, 1)>>
+
+	<<if $ar eq $i>>
+
+		<<set $ar = 0>>
+
+		<<display 'СбросБрони'>>
+
+	<<endif>>
+
+	<<if $ar gt $i>>
+
+		<<set $ar = $ar - 1>>
+
+	<<endif>>
+
+	<<if $pageA gte $invA.length>>
+
+		<<set $pageA = $pageA - 5>>
+
+	<<endif>>
+
+<<endif>>
+
+===''Склад оружия''===
+
+----
+
+<<random $rnd = 4>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = "Что это тут у нас? " + $text2 + ", если я не ошибаюсь. Забавный экземпляр...">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = "Что там у тебя, " + $name + "? " + $text2 + "? Недурно, весьма недурно.">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = "Я вижу, у тебя здесь " + $text2 + ". Очень хорошо, " + $name + "!">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = "Чем порадуешь, " + $name + "? О, да это же " + $text2 + "! Не ожидал...">>
+
+<<elseif $rnd eq 4>>
+
+	<<set $text1 = "И снова " + $name + " идёт сдавать трофеи! Хм, " + $text2 + "... А почему " + $text2.split(" ")[0].toLowerCase() + "?">>
+
+<<endif>>
+
+Кладовщик: <<print $text1>>
+
+<<random $rnd = 4>>
+
+<<if $rnd eq 0>>
+
+	<<print $name>>: Бери, пока дают.
+
+<<elseif $rnd eq 1>>
+
+	<<print $name>>: Забирай давай!
+
+<<elseif $rnd eq 2>>
+
+	<<print $name>>: Так ты берёшь или нет?
+
+<<elseif $rnd eq 3>>
+
+	<<print $name>>: Забирай, чего уж там.
+
+<<elseif $rnd eq 4>>
+
+	<<print $name>>: А молча ты принять не можешь?
+
+<<endif>>
+
+<<random $rnd = 4>>
+
+<<if $rnd eq 0>>
+
+	Кладовщик: Ну вот, будет теперь приз на следующий бой...
+
+<<elseif $rnd eq 1>>
+
+	Кладовщик: Распишись вот здесь... ну, крестик нацарапай.
+
+<<elseif $rnd eq 2>>
+
+	Кладовщик: Всё, всё, забираю.
+
+<<elseif $rnd eq 3>>
+
+	Кладовщик: Какой у меня сегодня удачный день!
+
+<<elseif $rnd eq 4>>
+
+	Кладовщик: Вон в тот сундук клади!
+
+<<endif>>
+
+===<<print $name>> отдаёт своё снаряжение:<<br>>''<<print $text2>>''.===
+
+===<<print $name>> обретает ''+<<print $tmp>>'' славы.===
+
+----
+
+===''[[Хорошо|Оружейная]]''===
+
+:: Оружейная[::]832-184-0
+
+<<fade = 0>>
+
+===''Оружейная''===
+
+----
+
+<<if $tab eq 0>>
+
+	===''Выбрать оружие''&nbsp;&nbsp;|&nbsp;&nbsp;''[[Выбрать броню|Оружейная {$tab = 1}]]''===
+
+	<<if ($setW eq 1) or ($setW eq 3)>>
+
+		<<if $setW eq 3>>
+
+			<<set $wl = -1>>
+
+			<<display 'СбросЛевой'>>
+
+		<<elseif $wr eq $wl>>
+
+			<<set $wl = 0>>
+
+			<<display 'СбросЛевой'>>
+
+		<<elseif ($setW eq 1) and ($wl eq -1)>>
+
+			<<set $wl = 0>>
+
+		<<endif>>
+
+		<<set $weapon = $invHar[$wr]>>
+
+		<<display 'ПараметрыОружия'>>
+
+		<<set $weapR = $inv[$wr]>>
+
+		<<set $wr_hpMax = $w_hpMax>>
+
+		<<set $wr_str = $w_str>>
+
+		<<set $wr_dex = $w_dex>>
+
+		<<set $wr_int = $w_int>>
+
+		<<set $wr_att = $w_att>>
+
+		<<set $wr_def = $w_def>>
+
+		<<set $wr_spd = $w_spd>>
+
+		<<set $wr_ddg = $w_ddg>>
+
+		<<set $wr_blk = $w_blk>>
+
+		<<set $wr_par = $w_par>>
+
+	<<elseif $setW eq 2>>
+
+		<<if $wr eq $wl>>
+
+			<<set $wr = 0>>
+
+			<<display 'СбросПравой'>>
+
+		<<endif>>
+
+		<<if $wr neq 0>>
+
+			<<set $weapon = $invHar[$wr]>>
+
+			<<display 'ПараметрыОружия'>>
+
+			<<if $w_2h>>
+
+				<<set $wr = 0>>
+
+				<<display 'СбросПравой'>>
+
+			<<endif>>
+
+		<<endif>>
+
+		<<set $weapon = $invHar[$wl]>>
+
+		<<display 'ПараметрыОружия'>>
+
+		<<set $weapL = $inv[$wl]>>
+
+		<<set $wl_hpMax = $w_hpMax>>
+
+		<<set $wl_str = $w_str>>
+
+		<<set $wl_dex = $w_dex>>
+
+		<<set $wl_int = $w_int>>
+
+		<<set $wl_att = $w_att>>
+
+		<<set $wl_def = $w_def>>
+
+		<<set $wl_spd = $w_spd>>
+
+		<<set $wl_ddg = $w_ddg>>
+
+		<<set $wl_blk = $w_blk>>
+
+		<<set $wl_par = $w_par>>
+
+	<<endif>>
+
+	<<set $i = $pageW>>
+
+	<<if $inv.length gt $i>>
+
+		<<display 'ДвуручноеОружие'>>
+
+		<<print $inv[$i]>>{{{&nbsp;}}}<<if $w_2h>><<if $i eq $wr>>{{{''◄&nbsp;Обе&nbsp;руки''}}}<<else>>[[{{{◄&nbsp;Обе&nbsp;руки}}}|Оружейная {$wr = $pageW} {$setW = 3}]]<<endif>><<else>><<if $i eq $wr>>{{{''◄&nbsp;Правая''}}}<<else>>[[{{{◄&nbsp;Правая}}}|Оружейная {$wr = $pageW} {$setW = 1}]]<<endif>><<if $i eq $wl>>{{{&nbsp;''◄&nbsp;Левая''}}}<<else>>{{{&nbsp;}}}[[{{{◄&nbsp;Левая}}}|Оружейная {$wl = $pageW} {$setW = 2}]]<<endif>><<endif>><<if $pageW gt 0>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageW}]]<<endif>><<br>>^^{{{<<print $invHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageW + 1>>
+
+	<<if $inv.length gt $i>>
+
+		<<display 'ДвуручноеОружие'>>
+
+		<<print $inv[$i]>>{{{&nbsp;}}}<<if $w_2h>><<if $i eq $wr>>{{{''◄&nbsp;Обе&nbsp;руки''}}}<<else>>[[{{{◄&nbsp;Обе&nbsp;руки}}}|Оружейная {$wr = $pageW + 1} {$setW = 3}]]<<endif>><<else>><<if $i eq $wr>>{{{''◄&nbsp;Правая''}}}<<else>>[[{{{◄&nbsp;Правая}}}|Оружейная {$wr = $pageW + 1} {$setW = 1}]]<<endif>><<if $i eq $wl>>{{{&nbsp;''◄&nbsp;Левая''}}}<<else>>{{{&nbsp;}}}[[{{{◄&nbsp;Левая}}}|Оружейная {$wl = $pageW + 1} {$setW = 2}]]<<endif>><<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageW + 1}]]<<br>>^^{{{<<print $invHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageW + 2>>
+
+	<<if $inv.length gt $i>>
+
+		<<display 'ДвуручноеОружие'>>
+
+		<<print $inv[$i]>>{{{&nbsp;}}}<<if $w_2h>><<if $i eq $wr>>{{{''◄&nbsp;Обе&nbsp;руки''}}}<<else>>[[{{{◄&nbsp;Обе&nbsp;руки}}}|Оружейная {$wr = $pageW + 2} {$setW = 3}]]<<endif>><<else>><<if $i eq $wr>>{{{''◄&nbsp;Правая''}}}<<else>>[[{{{◄&nbsp;Правая}}}|Оружейная {$wr = $pageW + 2} {$setW = 1}]]<<endif>><<if $i eq $wl>>{{{&nbsp;''◄&nbsp;Левая''}}}<<else>>{{{&nbsp;}}}[[{{{◄&nbsp;Левая}}}|Оружейная {$wl = $pageW + 2} {$setW = 2}]]<<endif>><<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageW + 2}]]<<br>>^^{{{<<print $invHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageW + 3>>
+
+	<<if $inv.length gt $i>>
+
+		<<display 'ДвуручноеОружие'>>
+
+		<<print $inv[$i]>>{{{&nbsp;}}}<<if $w_2h>><<if $i eq $wr>>{{{''◄&nbsp;Обе&nbsp;руки''}}}<<else>>[[{{{◄&nbsp;Обе&nbsp;руки}}}|Оружейная {$wr = $pageW + 3} {$setW = 3}]]<<endif>><<else>><<if $i eq $wr>>{{{''◄&nbsp;Правая''}}}<<else>>[[{{{◄&nbsp;Правая}}}|Оружейная {$wr = $pageW + 3} {$setW = 1}]]<<endif>><<if $i eq $wl>>{{{&nbsp;''◄&nbsp;Левая''}}}<<else>>{{{&nbsp;}}}[[{{{◄&nbsp;Левая}}}|Оружейная {$wl = $pageW + 3} {$setW = 2}]]<<endif>><<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageW + 3}]]<<br>>^^{{{<<print $invHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageW + 4>>
+
+	<<if $inv.length gt $i>>
+
+		<<display 'ДвуручноеОружие'>>
+
+		<<print $inv[$i]>>{{{&nbsp;}}}<<if $w_2h>><<if $i eq $wr>>{{{''◄&nbsp;Обе&nbsp;руки''}}}<<else>>[[{{{◄&nbsp;Обе&nbsp;руки}}}|Оружейная {$wr = $pageW + 4} {$setW = 3}]]<<endif>><<else>><<if $i eq $wr>>{{{''◄&nbsp;Правая''}}}<<else>>[[{{{◄&nbsp;Правая}}}|Оружейная {$wr = $pageW + 4} {$setW = 1}]]<<endif>><<if $i eq $wl>>{{{&nbsp;''◄&nbsp;Левая''}}}<<else>>{{{&nbsp;}}}[[{{{◄&nbsp;Левая}}}|Оружейная {$wl = $pageW + 4} {$setW = 2}]]<<endif>><<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageW + 4}]]<<br>>^^{{{<<print $invHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<if ($pageW gt 0) and ($pageW + 5 lt $inv.length)>>
+
+		===[[← Предыдущее|Оружейная {$pageW = $pageW - 5}]]{{{ | }}}[[Следующее →|Оружейная {$pageW = $pageW + 5}]]===
+
+	<<elseif ($pageW gt 0) and ($pageW + 5 gte $inv.length)>>
+
+		===[[← Предыдущее|Оружейная {$pageW = $pageW - 5}]]===
+
+	<<elseif ($pageW eq 0) and ($pageW + 5 lt $inv.length)>>
+
+		===[[Следующее →|Оружейная {$pageW = $pageW + 5}]]===
+
+	<<endif>>
+
+<<else>>
+
+	===''[[Выбрать оружие|Оружейная {$tab = 0}]]''&nbsp;&nbsp;|&nbsp;&nbsp;''Выбрать броню''===
+
+	<<if $setW eq 4>>
+
+		<<set $weapon = $invAHar[$ar]>>
+
+		<<display 'ПараметрыБрони'>>
+
+		<<set $armor = $invA[$ar]>>
+
+		<<set $a_hpMax = $w_hpMax>>
+
+		<<set $a_str = $w_str>>
+
+		<<set $a_dex = $w_dex>>
+
+		<<set $a_int = $w_int>>
+
+		<<set $a_def = $w_def>>
+
+		<<set $a_spd = $w_spd>>
+
+		<<set $a_ddg = $w_ddg>>
+
+		<<set $a_par = $w_par>>
+
+	<<endif>>
+
+	<<set $i = $pageA>>
+
+	<<if $invA.length gt $i>>
+
+		<<print $invA[$i]>>{{{&nbsp;}}}<<if $i eq $ar>>{{{''◄&nbsp;Надето''}}}<<else>>[[{{{◄&nbsp;Надеть}}}|Оружейная {$ar = $pageA} {$setW = 4}]]<<endif>><<if $pageA gt 0>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageA}]]<<endif>><<br>>^^{{{<<print $invAHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageA + 1>>
+
+	<<if $invA.length gt $i>>
+
+		<<print $invA[$i]>>{{{&nbsp;}}}<<if $i eq $ar>>{{{''◄&nbsp;Надето''}}}<<else>>[[{{{◄&nbsp;Надеть}}}|Оружейная {$ar = $pageA + 1} {$setW = 4}]]<<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageA + 1}]]<<br>>^^{{{<<print $invAHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageA + 2>>
+
+	<<if $invA.length gt $i>>
+
+		<<print $invA[$i]>>{{{&nbsp;}}}<<if $i eq $ar>>{{{''◄&nbsp;Надето''}}}<<else>>[[{{{◄&nbsp;Надеть}}}|Оружейная {$ar = $pageA + 2} {$setW = 4}]]<<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageA + 2}]]<<br>>^^{{{<<print $invAHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageA + 3>>
+
+	<<if $invA.length gt $i>>
+
+		<<print $invA[$i]>>{{{&nbsp;}}}<<if $i eq $ar>>{{{''◄&nbsp;Надето''}}}<<else>>[[{{{◄&nbsp;Надеть}}}|Оружейная {$ar = $pageA + 3} {$setW = 4}]]<<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageA + 3}]]<<br>>^^{{{<<print $invAHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<set $i = $pageA + 4>>
+
+	<<if $invA.length gt $i>>
+
+		<<print $invA[$i]>>{{{&nbsp;}}}<<if $i eq $ar>>{{{''◄&nbsp;Надето''}}}<<else>>[[{{{◄&nbsp;Надеть}}}|Оружейная {$ar = $pageA + 4} {$setW = 4}]]<<endif>>{{{&nbsp;|&nbsp;}}}[[{{{//отдать//}}}|Отдать {$i = $pageA + 4}]]<<br>>^^{{{<<print $invAHar[$i]>>}}}^^
+
+	<<endif>>
+
+	<<if ($pageA gt 0) and ($pageA + 5 lt $invA.length)>>
+
+		===[[← Предыдущее|Оружейная {$pageA = $pageA - 5}]]{{{ | }}}[[Следующее →|Оружейная {$pageA = $pageA + 5}]]===
+
+	<<elseif ($pageA gt 0) and ($pageA + 5 gte $invA.length)>>
+
+		===[[← Предыдущее|Оружейная {$pageA = $pageA - 5}]]===
+
+	<<elseif ($pageA eq 0) and ($pageA + 5 lt $invA.length)>>
+
+		===[[Следующее →|Оружейная {$pageA = $pageA + 5}]]===
+
+	<<endif>>
+
+<<endif>>
+
+----
+
+===''[[Готово|ЛистПерсонажа]]''===
+
+<<set $setW = 0>>
+
+:: Отдохнуть[::]832-312-0
+
+# Признак быстрого отдыха
+
+<<set $fastRest = false>>
+
+<<repeat 'Отдых' 2>>
+
+<<display 'Отдых'>>
+
+:: НизкийУровень[::]560-152-0
+
+<<print $name>>: Я хочу бросить вызов Чемпиону Арены! Подать его сюда!
+
+Распорядитель: Тише, <<print $name>>. <<if $glory gte 1000>>Возможно, ты и достаточно прославленный боец для этого боя, но ты всё ещё слишком неопытен.<<else>>Ты пока слишком мало умеешь для такого поединка.<<endif>> Чемпион Арены, непобедимый <<print $champName>> мокрого места от тебя не оставит! Потренируйся пока на простых врагах, а как наберёшься опыта, приходи.
+
+:: ПрименитьПотенциал[::]408-296-0
+
+# Запомнить распределение потенциала
+
+<<set $spMax = $sp>>
+
+# Нижний порог характеристик
+
+<<set $sp_str = $base_str>>
+
+<<set $sp_dex = $base_dex>>
+
+<<set $sp_int = $base_int>>
+
+<<set $sp_hpMax = $base_hpMax>>
+
+<<display 'ЛистПерсонажа'>>
+
+:: НовоеИмя[::]832-56-0
+
+<<fade = 400>>
+
+===''Назови своё имя, боец!''===
+
+----
+
+<<input 'ЛистПерсонажа' $name>>
+
+----
+
+===''[[Не скажу|ЛистПерсонажа]]''===
+
+:: ПридуматьИмя[::]704-56-0
+
+<<random $rnd = 13>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = "Хриппс">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = "Габаникс">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = "Агроний">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = "Пётр">>
+
+<<elseif $rnd eq 4>>
+
+	<<set $text1 = "Загрим">>
+
+<<elseif $rnd eq 5>>
+
+	<<set $text1 = "Шуго">>
+
+<<elseif $rnd eq 6>>
+
+	<<set $text1 = "Йогарь">>
+
+<<elseif $rnd eq 7>>
+
+	<<set $text1 = "Баварка">>
+
+<<elseif $rnd eq 8>>
+
+	<<set $text1 = "Сартоний">>
+
+<<elseif $rnd eq 9>>
+
+	<<set $text1 = "Мекос">>
+
+<<elseif $rnd eq 10>>
+
+	<<set $text1 = "Лженос">>
+
+<<elseif $rnd eq 11>>
+
+	<<set $text1 = "Карло">>
+
+<<elseif $rnd eq 12>>
+
+	<<set $text1 = "Аармон">>
+
+<<elseif $rnd eq 13>>
+
+	<<set $text1 = "Чезарь">>
+
+<<endif>>
+
+:: МалоСлавы[::]696-296-0
+
+<<print $name>>: Я хочу бросить вызов Чемпиону Арены! Где он прячется от меня?
+
+Распорядитель: Не спеши, <<print $name>>... Я знаю, ты уже достаточно опытен для этого боя, но кто ты такой, чтобы сражаться с Чемпионом? Мало кто слышал о тебе, а Чемпион Арены, непобедимый <<print $champName>> примет вызов только от прославленного бойца! Прославься сперва в простых боях, <<print $name>>, а уж потом заводи такие речи.
+
+:: Учить[::]336-936-0
+
+<<set $s_points = $s_points - 1>>
+
+<<set $s_k[$skill]++>>
+
+<<if $s_k[$skill] eq 10>>
+
+	<<set $s_timeMax[$skill] = $s_timeMax[$skill] - 1>>
+
+<<endif>>
+
+<<goto 'СписокУмений'>>
+
+:: СписокУмений[::]408-432-3
+
+<<fade = 0>>
+
+<<set $s_list = true>>
+
+===''Приёмы''===
+
+----
+
+<<set $i = 0>>
+
+<<loop $s_k.length>>
+
+	<<set $j = $s_k[$i]>>
+
+	<<display 'РимскиеЦифры'>>
+
+	<<set $tmp = "Умение" + $i>>
+
+	<<display $tmp>><<if $s_k[$i] gt 0>> ''<<print $text1>>''<<elseif $s_level gt $level>> //(требует <<print $s_level>> уровень)//<<elseif $s_k[$i] eq 0>> //(не изучено)//<<endif>><<if $skill eq $i>><<display 'УмениеИнфо'>><<if (($s_level lte $level) or ($s_k[$i] gt 0)) and ($s_points gt 0) and ($s_k[$i] lt 10)>><<br>><<if $s_k[$i] eq 0>>@@@[[''Изучить''|Учить]]@@@<<else>>@@@[[''Улучшить''|Учить]]@@@<<endif>><<endif>><<endif>>
+
+	<<set $i++>>
+
+<<endloop>>
+
+<<if $s_points gt 0>>
+
+	===''//<<print $name>> может тренировать приёмы.//''===
+
+	===Потенциал тренировки: ''<<print $s_points>>''===
+
+<<endif>>
+
+----
+
+===''[[Готово|ЛистПерсонажа]]''===
+
+:: УмениеИнфо[::]200-936-3
+
+<<if ($wr_att eq 0) and ($wl_att gt 0)>><<if $s_weap>><<set $att1 = Math.round($attL * $s_att)>><<else>><<set $att1 = Math.round(($attL - $wl_att * 0.6) * $s_att)>><<endif>><<else>><<if $s_weap>><<set $att1 = Math.round($attR * $s_att)>><<else>><<set $att1 = Math.round(($attR - $wr_att) * $s_att)>><<endif>><<endif>><<set $def1 = Math.round(($s_def - 1) * 100)>><<set $ddg1 = Math.round(($s_ddg - 1) * 100)>><<set $blk1 = Math.round(($s_blk - 1) * 100)>><<set $par1 = Math.round(($s_par - 1) * 100)>><<set $def2 = Math.round(($s_def2 - 1) * 100)>><<set $spd1 = Math.round(($s_spd - 1) * 100)>><<if $s_timeMax[$skill] gt 4>><<set $text1 = "ходов">><<elseif $s_timeMax[$skill] eq 1>><<set $text1 = "ход">><<else>><<set $text1 = "хода">><<endif>><<br>><<if $s_shield>>требует щит, <<endif>>наносит ''<<print $att1>>'' урона<<if $spd1 neq 0>>, <<if $spd1 gt 0>>увеличивает<<else>>снижает<<endif>> скорость атаки на ''<<print Math.abs($spd1)>>%''<<endif>><<if $def1 neq 0>>, <<if $def1 gt 0>>увеличивает<<else>>снижает<<endif>> защиту на ''<<print Math.abs($def1)>>%''<<endif>><<if $def2 neq 0>>, <<if $def2 gt 0>>увеличивает<<else>>снижает<<endif>> защиту противника на ''<<print Math.abs($def2)>>%''<<endif>><<if $ddg1 neq 0>>, <<if $ddg1 gt 0>>улучшает<<else>>ухудшает<<endif>> уклонение на ''<<print Math.abs($ddg1)>>%''<<endif>><<if $par1 neq 0>>, <<if $par1 gt 0>>улучшает<<else>>ухудшает<<endif>> парирование на ''<<print Math.abs($par1)>>%''<<endif>><<if $blk1 neq 0>>, <<if $blk1 gt 0>>улучшает<<else>>ухудшает<<endif>> блок щитом на ''<<print Math.abs($blk1)>>%''<<endif>><<if $s_stun gt 0>>, оглушает противника с вероятностью ''<<print $s_stun>>%''<<endif>>, требует перерыв ''<<print $s_timeMax[$skill]>>'' <<print $text1>>
+
+:: РимскиеЦифры[::]744-1064-4
+
+<<if $j eq 1>>
+
+	<<set $text1 = "I">>
+
+<<elseif $j eq 2>>
+
+	<<set $text1 = "II">>
+
+<<elseif $j eq 3>>
+
+	<<set $text1 = "III">>
+
+<<elseif $j eq 4>>
+
+	<<set $text1 = "IV">>
+
+<<elseif $j eq 5>>
+
+	<<set $text1 = "V">>
+
+<<elseif $j eq 6>>
+
+	<<set $text1 = "VI">>
+
+<<elseif $j eq 7>>
+
+	<<set $text1 = "VII">>
+
+<<elseif $j eq 8>>
+
+	<<set $text1 = "VIII">>
+
+<<elseif $j eq 9>>
+
+	<<set $text1 = "IX">>
+
+<<elseif $j eq 10>>
+
+	<<set $text1 = "X">>
+
+<<elseif $j eq 11>>
+
+	<<set $text1 = "XI">>
+
+<<elseif $j eq 12>>
+
+	<<set $text1 = "XII">>
+
+<<elseif $j eq 13>>
+
+	<<set $text1 = "XIII">>
+
+<<elseif $j eq 14>>
+
+	<<set $text1 = "XIV">>
+
+<<elseif $j eq 15>>
+
+	<<set $text1 = "XV">>
+
+<<else>>
+
+	<<set $text1 = "??">>
+
+<<endif>>
+
+:: StoryAuthor[::]400-8-1
+
+Борис Семёнов (Morych)
+
+:: ДобавитьБонусы[::]264-432-6
+
+<<set $bonus_hpMax = $wr_hpMax + $wl_hpMax + $a_hpMax>>
+
+<<set $hpMax = Math.max(50, $base_hpMax + $bonus_hpMax)>>
+
+<<if $hp gt $hpMax>>
+
+	<<set $hp = $hpMax>>
+
+<<endif>>
+
+<<set $bonus_str = $wr_str + $wl_str + $a_str>>
+
+<<set $str = Math.max(0, $base_str + $bonus_str)>>
+
+<<set $bonus_dex = $wr_dex + $wl_dex + $a_dex>>
+
+<<set $dex = Math.max(0, $base_dex + $bonus_dex)>>
+
+<<set $bonus_int = $wr_int + $wl_int + $a_int>>
+
+<<set $int = Math.max(0, $base_int + $bonus_int)>>
+
+# Уклонение
+
+<<set $bonus_ddg = $wr_ddg + $wl_ddg + $a_ddg>>
+
+<<set $ddg = Math.max(0, Math.round($str / 4 + $dex + $int / 2) + $bonus_ddg)>>
+
+# Блокирование (проверяется только при наличии хотя бы 1 щита) Прочность щита - сколько % он блокирует урона
+
+<<set $bonus_blk = $wr_blk + $wl_blk>>
+
+<<set $blk = Math.max(0, Math.round($str / 2 + $dex + $int / 4) + $bonus_blk)>>
+
+# Парирование (проверяется только при наличии хотя бы 1 оружия не щита)
+
+<<set $bonus_par = $wr_par + $wl_par + $a_par>>
+
+<<set $par = Math.max(0, Math.round($str / 3 + $dex + $int / 3) + $bonus_par)>>
+
+# Скорость атаки
+
+<<set $bonus_spd = $wr_spd + $wl_spd + $a_spd>>
+
+<<set $spd = Math.max(0, Math.round($str / 2 + $dex * 2 + $int / 5) + $bonus_spd)>>
+
+# Защита
+
+<<set $bonus_def = $wr_def + $wl_def + $a_def>>
+
+<<set $def = Math.max(0, Math.round($str / 2 + $dex / 3 + $int / 5) + $bonus_def)>>
+
+# Атака правой
+
+<<set $bonus_attR = $wr_att>>
+
+<<set $attR = Math.max(0, Math.round($str * 2 + $dex / 2 + $int / 4 + $bonus_attR))>>
+
+# Атака левой
+
+<<set $bonus_attL = $wl_att>>
+
+<<set $attL = Math.max(0, Math.round(($str * 2 + $dex / 2 + $int / 4 + $bonus_attL) * 0.6))>>
+
+:: СбросПравой[::]1240-40-4
+
+<<set $weapR = "Кулак">>
+
+<<set $wr_att = 0>>
+
+<<set $wr_str = 0>>
+
+<<set $wr_dex = 0>>
+
+<<set $wr_int = 0>>
+
+<<set $wr_hpMax = 0>>
+
+<<set $wr_ddg = 0>>
+
+<<set $wr_spd = 0>>
+
+<<set $wr_par = 0>>
+
+<<set $wr_blk = 0>>
+
+<<set $wr_def = 0>>
+
+:: ФормаСлова[::]776-448-4
+
+<<set $wf_data[0] = $wf_data[0] + "">><<set $m_temp = $wf_data[0].charAt($wf_data[0].length - 1) * 1>><<if $wf_data[0].length gt 1>><<if $wf_data[0].charAt($wf_data[0].length - 2) eq "1">><<set $m_temp = 0>><<endif>><<endif>><<if $m_temp eq 1>><<set $wf = $wf_data[1]>><<elseif ($m_temp eq 0) or ($m_temp gt 4)>><<set $wf = $wf_data[3]>><<else>><<set $wf = $wf_data[2]>><<endif>>
+
+:: Умение-1[::]16-1064-3
+
+<<set $s_name = "Атака">>
+
+<<set $s_level = 1>>
+
+<<set $s_att = 1>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+:: Умение2[::]376-1064-3
+
+<<set $tmp = $s_k[2]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[2] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Удар щитом">>
+
+<<set $s_level = 3>>
+
+<<set $s_att = 2.7 + (0.3 * ($s_k[2] - 1))>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1.54 + (0.07 * ($s_k[2] - 1))>>
+
+<<set $s_weap = false>>
+
+<<set $s_stun = Math.min(70, 50 + $s_k[2] - 1)>>
+
+<<set $s_shield = true>>
+
+<<set $s_k[2] = $tmp>>
+
+<<if $s_list>><<if $skill neq 2>>{{{► }}}[[''Удар щитом''|СписокУмений {$skill = 2}]]<<else>>{{{▼ }}}[[''Удар щитом''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение3[::]496-1064-3
+
+<<set $tmp = $s_k[3]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[3] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Оглушающий удар">>
+
+<<set $s_level = 4>>
+
+<<set $s_att = 1.2 + (0.07 * ($s_k[3] - 1))>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = Math.min(85, 65 + ($s_k[3] - 1) * 3)>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[3] = $tmp>>
+
+<<if $s_list>><<if $skill neq 3>>{{{► }}}[[''Оглушающий удар''|СписокУмений {$skill = 3}]]<<else>>{{{▼ }}}[[''Оглушающий удар''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение4[::]616-1064-3
+
+<<set $tmp = $s_k[4]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[4] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Возмездие">>
+
+<<set $s_level = 7>>
+
+<<set $s_att = 2.4 + (0.16 * ($s_k[4] - 1))>>
+
+<<set $s_spd = Math.min(1, 0.8 + (0.08 * ($s_k[4] - 1)))>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[4] = $tmp>>
+
+<<if $s_list>><<if $skill neq 4>>{{{► }}}[[''Возмездие''|СписокУмений {$skill = 4}]]<<else>>{{{▼ }}}[[''Возмездие''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение5[::]16-1184-3
+
+<<set $tmp = $s_k[5]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[5] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Дюжина клинков">>
+
+<<set $s_level = 10>>
+
+<<set $s_att = 0.9 + (0.1 * ($s_k[5] - 1))>>
+
+<<set $s_spd = 2.6 + (0.17 * ($s_k[5] - 1))>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1.6 + (0.19 * ($s_k[5] - 1))>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[5] = $tmp>>
+
+<<if $s_list>><<if $skill neq 5>>{{{► }}}[[''Дюжина клинков''|СписокУмений {$skill = 5}]]<<else>>{{{▼ }}}[[''Дюжина клинков''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение0[::]136-1064-3
+
+<<set $s_name = "Яростный удар">>
+
+<<set $s_level = 1>>
+
+<<set $s_att = 1.7 + (0.15 * ($s_k[0] - 1))>>
+
+<<set $s_spd = 1.5 + (0.05 * ($s_k[0] - 1))>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = Math.min(1, 0.5 + (0.1 * ($s_k[0] - 1)))>>
+
+<<set $s_par = Math.min(1, 0.5 + (0.1 * ($s_k[0] - 1)))>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+<<if $s_list>><<if $skill neq 0>>{{{► }}}[[''Яростный удар''|СписокУмений {$skill = 0}]]<<else>>{{{▼ }}}[[''Яростный удар''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение1[::]256-1064-3
+
+<<set $tmp = $s_k[1]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[1] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Жестокий пинок">>
+
+<<set $s_level = 2>>
+
+<<set $s_att = 2.5 + (0.6 * ($s_k[1] - 1))>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = Math.max(0, 0.5 - (0.05 * ($s_k[1] - 1)))>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = false>>
+
+<<set $s_stun = Math.min(55, 35 + $s_k[1] - 1)>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[1] = $tmp>>
+
+<<if $s_list>><<if $skill neq 1>>{{{► }}}[[''Жестокий пинок''|СписокУмений {$skill = 1}]]<<else>>{{{▼ }}}[[''Жестокий пинок''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение7[::]256-1184-3
+
+<<set $tmp = $s_k[7]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[7] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Стальной вихрь">>
+
+<<set $s_level = 17>>
+
+<<set $s_att = 1.9 + (0.14 * ($s_k[7] - 1))>>
+
+<<set $s_spd = 2.8 + (0.19 * ($s_k[7] - 1))>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1.4 + (0.17 * ($s_k[7] - 1))>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = Math.min(65, 30 + $s_k[7] - 1)>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[7] = $tmp>>
+
+<<if $s_list>><<if $skill neq 7>>{{{► }}}[[''Стальной вихрь''|СписокУмений {$skill = 7}]]<<else>>{{{▼ }}}[[''Стальной вихрь''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение8[::]376-1184-3
+
+<<set $tmp = $s_k[8]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[8] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Кража брони">>
+
+<<set $s_level = 22>>
+
+<<set $s_att = 3 + (0.19 * ($s_k[8] - 1))>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 3 + (0.18 * ($s_k[8] - 1))>>
+
+<<set $s_def2 = 0>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = false>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[8] = $tmp>>
+
+<<if $s_list>><<if $skill neq 8>>{{{► }}}[[''Кража брони''|СписокУмений {$skill = 8}]]<<else>>{{{▼ }}}[[''Кража брони''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение6[::]136-1184-3
+
+<<set $tmp = $s_k[6]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[6] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Танцующая тень">>
+
+<<set $s_level = 14>>
+
+<<set $s_att = 0.8 + (0.1 * ($s_k[6] - 1))>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 1.2 + (0.12 * ($s_k[6] - 1))>>
+
+<<set $s_def2 = 1>>
+
+<<set $s_ddg = 2.5 + (0.18 * ($s_k[6] - 1))>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[6] = $tmp>>
+
+<<if $s_list>><<if $skill neq 6>>{{{► }}}[[''Танцующая тень''|СписокУмений {$skill = 6}]]<<else>>{{{▼ }}}[[''Танцующая тень''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение9[::]496-1184-3
+
+<<set $tmp = $s_k[9]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[9] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Ветер смерти">>
+
+<<set $s_level = 27>>
+
+<<set $s_att = 2.8 + (0.19 * ($s_k[9] - 1))>>
+
+<<set $s_spd = 2 + (0.12 * ($s_k[9] - 1))>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = Math.max(0, 0.7 - (0.09 * ($s_k[9] - 1)))>>
+
+<<set $s_ddg = 2.1 + (0.16 * ($s_k[9] - 1))>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 0>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[9] = $tmp>>
+
+<<if $s_list>><<if $skill neq 9>>{{{► }}}[[''Ветер смерти''|СписокУмений {$skill = 9}]]<<else>>{{{▼ }}}[[''Ветер смерти''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: Умение10[::]616-1184-3
+
+<<set $tmp = $s_k[10]>>
+
+<<if $tmp eq 0>>
+
+	<<set $s_k[10] = 1>>
+
+<<endif>>
+
+<<set $s_name = "Абсолютная власть">>
+
+<<set $s_level = 30>>
+
+<<set $s_att = 3.4 + (0.36 * ($s_k[10] - 1))>>
+
+<<set $s_spd = 1>>
+
+<<set $s_def = 1>>
+
+<<set $s_def2 = 0>>
+
+<<set $s_ddg = 1>>
+
+<<set $s_par = 1>>
+
+<<set $s_blk = 1>>
+
+<<set $s_weap = true>>
+
+<<set $s_stun = 100>>
+
+<<set $s_shield = false>>
+
+<<set $s_k[10] = $tmp>>
+
+<<if $s_list>><<if $skill neq 10>>{{{► }}}[[''Абсолютная власть''|СписокУмений {$skill = 10}]]<<else>>{{{▼ }}}[[''Абсолютная власть''|СписокУмений {$skill = -1}]]<<endif>><<endif>>
+
+:: ДействиеГероя[::]704-912-0
+
+<<if $wr_att gt 0>>
+
+	<<set $text1 = $weapR>>
+
+<<elseif $wl_att gt 0>>
+
+	<<set $text1 = $weapL>>
+
+<<else>>
+
+	<<set $text1 = "">>
+
+<<endif>>
+
+<<random $rnd = 6>>
+
+<<if $rnd eq 0>>
+
+	<<if $text1 eq "">>
+
+		<<print $name>> неистово лупит кулаками воздух, демонстрируя сопернику скорость удара.
+
+	<<else>>
+
+		<<print $name>> неистово вращает оружие. <<print $text1>> так и сверкает в воздухе.
+
+	<<endif>>
+
+<<elseif $rnd eq 1>>
+
+	<<print $name>> пытается обойти противника по дуге.
+
+<<elseif $rnd eq 2>>
+
+	<<print $name>> раззадоривает врага оскорблениями и неприличными жестами.
+
+<<elseif $rnd eq 3>>
+
+	<<print $name>> показательно разминает руки и шею.
+
+<<elseif $rnd eq 4>>
+
+	<<print $name>> издаёт боевой клич и стучит себя кулаком в грудь.
+
+<<elseif $rnd eq 5>>
+
+	<<print $name>> молча наблюдает за соперником.
+
+<<elseif $rnd eq 6>>
+
+	<<if $text1 eq "">>
+
+		<<print $name>> демонстрирует зрителям свои грозные кулаки, но зрители считают, что <<print $e_weapon>> надёжнее.
+
+	<<else>>
+
+		<<print $name>> вскидывает над головой своё оружие, и пубулика взрывается восторженным криком. <<print $text1>> -- это вам не <<print $e_weapon>>.
+
+	<<endif>>
+
+<<endif>>
+
+:: ИндикаторПроцесса[::]904-448-4
+
+<<set $pr_text = "">><<set $tmp = Math.min(Math.round($pr_value / $pr_valueMax * $pr_size), $pr_size)>><<if ($pr_value gt 0) and ($tmp eq 0)>><<set $tmp = 1>><<endif>><<if ($pr_value lt $pr_valueMax) and ($tmp eq $pr_size)>><<set $tmp = $tmp - 1>><<endif>><<loop $tmp>><<set $pr_text = $pr_text + "█">><<endloop>><<set $tmp = $pr_size - $tmp>><<loop $tmp>><<set $pr_text = $pr_text + "▒">><<endloop>>
+
+:: ВыходПротивников[::]384-752-0
+
+<<set $text2 = "">>
+
+<<loop 2>>
+
+	<<random $rnd = 5>>
+
+	<<if ($rnd eq 0) and (($phase eq 0) or (!$e_animal))>>
+
+		<<set $text1 = "На песок Арены неспешно выходит ">>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $text1 = "На Арене появляется ">>
+
+	<<elseif ($rnd eq 2) and (($phase eq 0) or (!$e_animal))>>
+
+		<<set $text1 = "И вот на Арену выходит ">>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $text1 = "Поднимается чугунная решётка, и на песке появляется ">>
+
+	<<elseif ($rnd eq 4) and (($phase eq 0) or (!$e_animal))>>
+
+		<<set $text1 = "На песчаное покрытие Арены ступает ">>
+
+	<<elseif ($rnd eq 5) and (($phase eq 0) or (!$e_animal))>>
+
+		<<set $text1 = "Приветствуя публику, на Арену выбегает ">>
+
+	<<elseif $phase eq 1>>
+
+		<<set $text1 = "А вот и противник — ">>
+
+	<<endif>>
+
+	<<if $text2 eq "">>
+
+		<<set $text2 = $text1>>
+
+	<<elseif $text2 eq $text1>>
+
+		<<set $text1 = "Но тут из противоположного выхода показывается ">>
+
+	<<endif>>
+
+	<<if $phase eq 0>>
+
+		<<set $text1 = $text1 + $name + ".">>
+
+		<<set $rnd = $glory>>
+
+	<<else>>
+
+		<<set $text1 = $text1 + $enemyP + ".">>
+
+		<<set $rnd = $e_level * 20>>
+
+	<<endif>>
+
+	<<if $rnd lt 100>>
+
+		<<random $rnd = 5>>
+
+		<<if $rnd eq 0>>
+
+			<<set $text1 = $text1 + " Скучающей публике нет до этого дела.">>
+
+		<<elseif $rnd eq 1>>
+
+			<<set $text1 = $text1 + " Но зрители, похоже, не впечатлены.">>
+
+		<<elseif $rnd eq 2>>
+
+			<<set $text1 = $text1 + " Публика хохочет, наблюдая это зрелище.">>
+
+		<<elseif $rnd eq 3>>
+
+			<<set $text1 = $text1 + " Со стороны публики доносятся редкие хлопки и выкрики.">>
+
+		<<elseif $rnd eq 4>>
+
+			<<set $text1 = $text1 + " Из зрительских рядов раздаются отдельные крики поддержки.">>
+
+		<<elseif $rnd eq 5>>
+
+			<<set $text1 = $text1 + " Публика довольно вяло встречает бойца.">>
+
+		<<endif>>
+
+	<<elseif $rnd lt 900>>
+
+		<<random $rnd = 5>>
+
+		<<if $rnd eq 0>>
+
+			<<set $text1 = $text1 + " Зрители горячо приветствуют бойца.">>
+
+		<<elseif $rnd eq 1>>
+
+			<<set $text1 = $text1 + " Публика громко свистит и улюлюкает.">>
+
+		<<elseif $rnd eq 2>>
+
+			<<set $text1 = $text1 + " Зрители оживлённо делают ставки.">>
+
+		<<elseif $rnd eq 3>>
+
+			<<set $text1 = $text1 + " Со стороны публики доносятся крики одобрения и поддержки.">>
+
+		<<elseif $rnd eq 4>>
+
+			<<set $text1 = $text1 + " Из зрительских рядов раздаются бурные и продолжительные аплодисменты.">>
+
+		<<elseif $rnd eq 5>>
+
+			<<set $text1 = $text1 + " Публика радушно встречает бойца.">>
+
+		<<endif>>
+
+	<<else>>
+
+		<<set $text1 = $text1 + " Зрители неистово кричат. В знак поддержки на песок летят цветы, головные уборы и прочие предметы одежды.">>
+
+	<<endif>>
+
+	<<print $text1>>
+
+	<<if ($phase eq 1) and ($enemy neq $champName)>>
+
+		<<random $rnd = 5>>
+
+		<<if $rnd eq 1>>
+
+			Зритель: Глядите! Это же <<if $e_gnd eq 0>>сама<<elseif $e_gnd eq 1>>сам<<else>>само<<endif>> <<print $enemyP>>!
+
+		<<elseif $rnd eq 2>>
+
+			Зритель: Так вот ты как<<if $e_gnd eq 0>>ая<<elseif $e_gnd eq 1>>ой<<else>>ое<<endif>>, <<print $enemyP>>!
+
+		<<elseif $rnd eq 3>>
+
+			Зритель: О Боги! Неужели это <<print $enemyP>>?!
+
+		<<elseif $rnd eq 4>>
+
+			Зритель: Смотрите, смотрите! Это ведь знаменит<<if $e_gnd eq 0>>ая<<elseif $e_gnd eq 1>>ый<<else>>ое<<endif>> <<print $enemyP>>!
+
+		<<elseif $rnd eq 5>>
+
+			Зритель: Не могу поверить! <<print $enemyP>>! Где они <<if $e_gnd eq 0>>её<<else>>его<<endif>> раздобыли?
+
+		<<endif>>
+
+	<<elseif $phase eq 1>>
+
+		<<set $text2 = "">>
+
+		<<loop 2>>
+
+			<<random $rnd = 6>>
+
+			<<if $rnd eq 0>>
+
+				<<if $champ>>
+
+					<<set $text1 = "Публика: Вперёд, Чемпион Арены! Вперёд, " + $name + "!">>
+
+				<<else>>
+
+					<<set $text1 = "Публика: Вперёд, Чемпион Арены! Вперёд, " + $enemy + "!">>
+
+				<<endif>>
+
+			<<elseif $rnd eq 1>>
+
+				<<if $champ>>
+
+					<<set $text1 = "Зрители: Тебе конец, " + $enemy + "! Чемпион уделает тебя!">>
+
+				<<else>>
+
+					<<set $text1 = "Зрители: Тебе конец, " + $name + "! Чемпион уделает тебя!">>
+
+				<<endif>>
+
+			<<elseif $rnd eq 2>>
+
+				<<set $text1 = "Зрительница: Я люблю тебя, Чемпион!">>
+
+			<<elseif $rnd eq 3>>
+
+				<<set $text1 = "Зрительница: Чемпион, сделай мне ребёнка!">>
+
+			<<elseif $rnd eq 4>>
+
+				<<if $champ>>
+
+					<<set $text1 = "Ростовщик: " + $enemy + ", верни мои деньги!">>
+
+				<<else>>
+
+					<<set $text1 = "Ростовщик: " + $name + ", верни мои деньги!">>
+
+				<<endif>>
+
+			<<elseif $rnd eq 5>>
+
+				<<set $text1 = "Публика: Слава Чемпиону Арены!">>
+
+			<<elseif $rnd eq 6>>
+
+				<<set $text1 = "Зрители: Ура! Да здравствует Чемпион Арены!">>
+
+			<<endif>>
+
+			<<if $text2 eq "">>
+
+				<<set $text2 = $text1>>
+
+			<<elseif $text2 eq $text1>>
+
+				<<set $text1 = "Публика: Чемпион! Чемпион! Чемпион!">>
+
+			<<endif>>
+
+			<<print $text1>>
+
+		<<endloop>>
+
+	<<endif>>
+
+	<<if $phase eq 0>>
+
+		<<set $phase++>>
+
+	<<endif>>
+
+<<endloop>>
+
+<<if $enemy eq $champName>>
+
+	Распорядитель игр поднимается со своего места, и зрители мгновенно смолкают.
+
+	Распорядитель: Приветствую вас, достопочтенная публика!
+
+	Публика взрывается бурными и восторженными овациями.
+
+	<<if $champ>>
+
+		Распорядитель: Вот и настал тот день и тот час, которого все мы так долго ждали! Сегодня <<print $enemy>> бросает вызов действующему Чемпиону Арены! Такого сражения ещё никто не видел прежде! Да начнётся битва, и пусть победит достойнейший! Чемпион Арены <<print $name>> и <<print $enemy>>! К бою!
+
+	<<else>>
+
+		Распорядитель: Вот и настал тот день и тот час, которого все мы так долго ждали! Сегодня <<print $name>> бросает вызов действующему Чемпиону Арены! Такого сражения ещё никто не видел прежде! Да начнётся битва, и пусть победит достойнейший! <<print $enemyP>> и <<print $name>>! К бою!
+
+	<<endif>>
+
+<<else>>
+
+	<<random $rnd = 5>>
+
+	<<if $rnd eq 0>>
+
+		<<set $text1 = " игр даёт сигнал к началу поединка.">>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $text1 = ": Да начнётся битва!">>
+
+	<<elseif $rnd eq 2>>
+
+		<<set $text1 = ": Начинайте!">>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $text1 = ": " + $name + " и " + $enemyP + ", к бою!">>
+
+	<<elseif $rnd eq 4>>
+
+		<<set $text1 = ": Приступайте!">>
+
+	<<elseif $rnd eq 5>>
+
+		<<set $text1 = " игр бросает на Арену платок, и сражение начинается.">>
+
+	<<endif>>
+
+	Распорядитель<<print $text1>>
+
+<<endif>>
+
+<<if ($weapL eq "Кулак") and ($weapR eq "Кулак") and ($armor eq "Сублигакулум")>>
+
+	В это же время по зрительским рядам проносится ропот. Ещё бы! <<print $name>> не только без брони, но даже и без оружия! Похоже, битва окончится очень быстро...
+
+<<elseif ($weapL eq "Кулак") and ($weapR eq "Кулак")>>
+
+	Зрители показывают друг другу пальцами -- <<print $name>>, оказывается, выходит на Арену без оружия. Так поступают либо храбрецы, либо дураки.
+
+<<elseif $armor eq "Сублигакулум">>
+
+	<<print $name>>, желая продемонстрировать презрение к противнику, появляется на Арене без всякой брони. Публика одобрительно гудит, предвкушая кровавое зрелище.
+
+<<endif>>
+
+:: ИнфоВрага[::]624-592-5
+
+<<if !$enemyInfo>>
+
+	<<print $name>> оценивает противника...
+
+<<else>>
+
+	<<print $name>> с любопытством разглядывает существо...
+
+<<endif>>
+
+===''<<print $enemyP>>''<<br>>==={{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Уровень: }}}''<<print $e_level>>''<<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;Здоровье: }}}''<<print $e_hp>>'' / ''<<print $e_hpMax>>''<<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Атака: }}}''<<print $e_att>>''<<if $e_weapNum gt 1>> ×<<print $e_weapNum>><<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Защита: }}}''<<print $e_def>>''<<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;Скорость: }}}''<<print $e_spd>>''<<br>>{{{&nbsp;&nbsp;&nbsp;Уклонение: }}}''<<print $e_ddg>>''<<if $e_weapNum gt 0>><<br>>{{{&nbsp;Парирование: }}}''<<print $e_par>>''<<endif>><<if $e_shieldState gt 0>><<br>>{{{&nbsp;&nbsp;Блок щитом: }}}''<<print $e_blk>>'' (щит: <<print $e_shieldState>>)<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Оружие: }}}<<print $e_weapon>>
+
+:: ДействиеВрага[::]832-912-0
+
+<<if $e_animal>>
+
+	<<if $actions.length gt 0>>
+
+		<<set $tmp = Math.round(Math.random() * ($actions.length - 1))>>
+
+		<<print $enemyP>> <<print $actions[$tmp]>>
+
+	<<endif>>
+
+<<else>>
+
+	<<random $rnd = 8>>
+
+	<<if $rnd eq 0>>
+
+		<<print $enemyP>> жестоко оскорбляет противника. <<print $name>> теперь знает пару новых слов.
+
+	<<elseif $rnd eq 1>>
+
+		<<print $enemyP>> грубо бранится и показывает неприличные жесты.
+
+	<<elseif $rnd eq 2>>
+
+		<<print $enemyP>> сотрясает воздух проклятиями.
+
+	<<elseif $rnd eq 3>>
+
+		<<print $enemyP>> озирается по сторонам, чтобы убедиться в зрительской поддержке.
+
+	<<elseif $rnd eq 4>>
+
+		<<print $enemyP>> полными ненависти глазами глядит на противника.
+
+	<<elseif $rnd eq 5>>
+
+		<<print $enemyP>> издаёт боевой клич и потрясает оружием.
+
+	<<elseif $rnd eq 6>>
+
+		<<print $enemyP>> перекидывает оружие из одной руки в другую.
+
+	<<elseif $rnd eq 7>>
+
+		<<print $enemyP>> тихо ненавидит противника.
+
+	<<elseif $rnd eq 8>>
+
+		<<print $enemyP>> демонстрирует публике своё оружие. <<print $e_weapon>> -- конечно, не <<print $weapR>>, но публика в восторге.
+
+	<<endif>>
+
+<<endif>>
+
+:: Враги5[::]1216-568-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Крикса">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Острые когти">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ке-ке!", "Кя-кя!", "Кииись!"]>>
+
+	<<set $actions = ["громко хлопает крыльями.", "выпускает острые когти.", "скалит ряды мелких острых зубов.", "кряхтит и пытается достать противника."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Чучело">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_weapon = "Острый кол">>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Хо-хо!", "Хааа!", "Хе-хе!", "Опаньки!", "Хеее!"]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Медведь">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_weapon = "Когтистая лапа">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аааррр!", "Уаааррр!", "Ррраааууу!"]>>
+
+	<<set $actions = ["поднимается на задние лапы и оглушительно ревёт.", "неистово размахивает когтистыми лапами.", "страшно трясёт головой и вертит носом.", "рычит и скалит жуткие клыки."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Паукан">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_weapon = "Жестокие челюсти">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хшшш!", "Хщщщ!", "Шшш..."]>>
+
+	<<set $actions = ["угрожающе поднимается на задние ноги.", "свирепо шевелит жвалами.", "пристально следит за противником многочисленными глазами.", "жутковато топчется на одном месте."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Ящер">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapon = "Зубастая пасть">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хххааа!", "Хххооо!", "Хххссс!"]>>
+
+	<<set $actions = ["с шипением выпускает из пасти раздвоенный язык.", "пялится на противника пустыми глазами.", "свирепо помахивает мощным хвостом.", "разевает огромную пасть полную острых зубов."]>>
+
+<<endif>>
+
+:: Враги6[::]1336-568-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Кикимора">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Когтистая рука">>
+
+	<<set $words = ["Поди-ка сюда!", "Ишь ты!", "О-хо-хо-хо!", "Ой...", "Гм..."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Бродяжник">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_weapon = "Ржавый меч">>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Упырь">>
+
+	<<set $e_weapon = "Когтистые руки">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 0>>
+
+	<<set $words = ["Арргх!", "Крооовиии!", "Тьмааа победииит!", "Я заберу всю твою силу!", "Иди сюда!", "Свежая кровь!", "Еда сама идёт ко мне!"]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Страшило">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_weapon = "Длинный кол">>
+
+	<<set $e_weapNum = 1>>
+
+	<<elseif $rnd eq 7>>
+
+	<<set $words = ["Боишься меня?", "Бойся меня!", "Ууу! Страшно?", "Бу!", "Нельзя так просто взять и не испугаться меня!", "Тебе не запугать меня!"]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Гномик">>
+
+	<<set $e_weapon = "Титановая кирка">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_weapNum = 1>>
+
+<<endif>>
+
+:: Враги7[::]1096-688-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Тать">>
+
+	<<set $e_weapon = "Шипастая булава">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Зомби">>
+
+	<<set $e_weapon = "Зловонные руки">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Мммооозгиии...", "Эээ...", "Ааа...", "Фаааршшш..."]>>
+
+	<<set $actions = ["бестолково ковыляет по кругу.", "злобно скалит гнилые зубы.", "тянет к противнику свои страшные руки.", "тщетно пытается осознать происходящее.", "тяжело движется вперёд, волоча ноги."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Оборотень">>
+
+	<<set $e_weapon = "Клыкастая пасть">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аррргх!", "Рррр!", "Ррравх! Ррравх!", "Аууу!"]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Скелет">>
+
+	<<set $e_weapon = "Костяной ятаган">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Хшшш!", "Хщщщ!", "Хссс!", "Вссс!"]>>
+
+	<<set $actions = ["гремит костями.", "с грохотом подпрыгивает на одном месте.", "яростно машет своим оружием.", "взирает на мир пустыми глазницами.", "вдруг пускается в пляс.", "жутковато скалится и щелкает зубами."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Жимало">>
+
+	<<set $e_weapon = "Ядовитое жало">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 3>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хшшш!", "Хщщщ!", "Шшш..."]>>
+
+	<<set $actions = ["угрожающе поднимается на задние ноги.", "свирепо шевелит жвалами.", "яростно щёлкает огромными клешнями.", "жутковато топчется на одном месте.", "агрессивно размахивает ядовитым жалом."]>>
+
+<<endif>>
+
+:: Враги8[::]1216-688-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Летун">>
+
+	<<set $e_weapon = "Острые крылья">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Кре-кре!", "Крю-крю!", "Фуить!"]>>
+
+	<<set $actions = ["яростно хлопает крыльями.", "выпускает острые когти.", "громко щёлкает зубастым клювом.", "со свистом рассекает воздух острыми крыльями."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Умертвие">>
+
+	<<set $e_weapon = "Меч смерти">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ааашшш...", "Эээ...", "Шшшооо...", "Яяя..."]>>
+
+	<<set $actions = ["бестолково озирается по сторонам.", "неспешно ковыляет в атаку.", "жутковато хрипит и разевает рот.", "робко топчется на одном месте.", "принимается размахивать своим страшным оружием."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Зыбочник">>
+
+	<<set $e_weapon = "Горсть песка">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 1>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Критун">>
+
+	<<set $e_weapon = "Костяной гарпун">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Вурдалак">>
+
+	<<set $e_weapon = "Пасть вурдалака">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $words = ["Аррр!", "Жрааачь!", "Ррр...", "Агррр..."]>>
+
+	<<set $actions = ["злобно глядит на противника.", "считает противника едой.", "тянет когтистые лапы.", "разевает страшную клыкастую пасть.", "свирепо щёлкает челюстями.", "пытается зайти со спины."]>>
+
+<<endif>>
+
+:: Враги9[::]1336-688-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Сторож">>
+
+	<<set $e_weapon = "Бронзовая алебарда">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Стоять!", "Ты не пройдёшь!", "Стой на месте!", "Я здесь главный!"]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Змей">>
+
+	<<set $e_weapon = "Ядовитые зубы">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Фшшш...", "Фщщщ...", "Фссс..."]>>
+
+	<<set $actions = ["угрожающе трясёт хвостом.", "с шипением выпускает из пасти раздвоенный язык.", "шипит и сворачивается кольцами.", "разевает страшную пасть с ядовитыми зубами.", "пытается загипнотизировать противника взглядом."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Супостат">>
+
+	<<set $e_weapon = "Железный дротик">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 5>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Каратель">>
+
+	<<set $e_weapon = "Жестокий серп">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Болотник">>
+
+	<<set $e_weapon = "Трухлявый посох">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Ох...", "Ох-ох-ох...", "Ой...", "Ооо..."]>>
+
+<<endif>>
+
+:: Враги10[::]1096-808-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Мерзь">>
+
+	<<set $e_weapon = "Зловонная струя">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Шшш...", "Эээ...", "Ахшшш...", "Буэээ..."]>>
+
+	<<set $actions = ["отвратительно растекается по земле.", "принимает самые неожиданные и тошнотворные формы.", "ползает по земле и портит воздух.", "издаёт омерзительные звуки."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Оползень">>
+
+	<<set $e_weapon = "Ком грязи">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Буль...", "Буль-буль...", "Бууу...", "Пууу..."]>>
+
+	<<set $actions = ["умело притворяется грязью.", "неудержимо расползается по земле.", "шевелит глазами и пускает пузыри.", "начинает увеличиваться в размерах."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Гремлин">>
+
+	<<set $e_weapon = "Ржавое копьё">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 8>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Хя-хя!", "Кя-кя!", "А?", "Ррраз!", "Хря!"]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Мародёр">>
+
+	<<set $e_weapon = "Острая лопата">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Шатун">>
+
+	<<set $e_weapon = "Огромные когти">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 2>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аааррр!", "Уаааррр!", "Ррраааууу!"]>>
+
+	<<set $actions = ["поднимается на задние лапы и оглушительно ревёт.", "неистово размахивает когтистыми лапами.", "страшно трясёт головой и вертит носом.", "рычит и скалит жуткие клыки."]>>
+
+<<endif>>
+
+:: Враги11[::]1216-808-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Чудь">>
+
+	<<set $e_weapon = "Ядовитые иглы">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ууу!", "Уооо!", "Ауррр!", "Ооо!"]>>
+
+	<<set $actions = ["угрожающе расправляет ядовитые иглы.", "задирает морду и оглушительно воет.", "яростно трясёт головой и вертит носом.", "щёлкает страшными острыми зубами."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Пират">>
+
+	<<set $e_weapon = "Абордажная сабля">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 0>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Муз">>
+
+	<<set $e_weapon = "Серебряная лира">>
+
+	<<set $e_hpMax = 3>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 4>>
+
+	<<set $e_defBonus = 8>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Секимора">>
+
+	<<set $e_weapon = "Клешни секиморы">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хшшш!", "Хщщщ!", "Шшш..."]>>
+
+	<<set $actions = ["угрожающе поднимается на задние ноги.", "свирепо шевелит жвалами.", "яростно щёлкает огромными клешнями.", "перебирает по земле шестью ворсистыми ногами.", "стремительно машет усиками."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Кромешник">>
+
+	<<set $e_weapon = "Зазубренный бердыш">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+<<endif>>
+
+:: Враги12[::]1336-808-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Воитель">>
+
+	<<set $e_weapon = "Двуручный меч">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Мавка">>
+
+	<<set $e_weapon = "Рыбная кость">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $words = ["Ой-ой!", "Ну-ну!", "Ха!", "Фи!"]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Саламандра">>
+
+	<<set $e_weapon = "Язык пламени">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хххшшш!", "Хххщщщ!", "Хххссс!"]>>
+
+	<<set $actions = ["с шипением выпускает из пасти раздвоенный язык.", "пялится на противника горящими глазами.", "свирепо помахивает толстым хвостом.", "разевает пасть полную острых зубов.", "пускает искры и языки пламени."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Овощ">>
+
+	<<set $e_weapon = "Ядовитый корень">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["..."]>>
+
+	<<set $actions = ["свирепо размахивает корнями.", "пытается зарыться в землю.", "выпускает корни в поисках добычи.", "сворачивает и разворачивает листья.", "громко скрипит стеблем и корнями."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Гадина">>
+
+	<<set $e_weapon = "Зубастая пасть">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аррршшш!", "Рррр!", "Рррашшш!", "Ахшшш!"]>>
+
+<<endif>>
+
+:: Враги13[::]1096-928-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Великан">>
+
+	<<set $e_weapon = "Вырванное дерево">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 1>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Секутор">>
+
+	<<set $e_weapon = "Двойные клинки">>
+
+	<<set $e_hpMax = 5>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapNum = 2>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Химера">>
+
+	<<set $e_weapon = "Ядовитое жало">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аааууу!", "Ииивссс!", "Аррргх!"]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Губернатор">>
+
+	<<set $e_weapon = "Золотая булава">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 0>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 5>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Жрец">>
+
+	<<set $e_weapon = "Священная булава">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 4>>
+
+<<endif>>
+
+:: Враги15[::]1336-928-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Угнетатель">>
+
+	<<set $e_weapon = "Стальная цепь">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Огр">>
+
+	<<set $e_weapon = "Каменная палица">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 8>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Эээх!", "Ууух!", "А?", "Ну!"]>>
+
+	<<set $actions = ["яростно вертит палицей.", "показательно разминает здоровенные ручищи.", "издаёт нечленораздельные звуки.", "злобно озирается по сторонам.", "с ненавистью взирает на противника.", "свирепо скалит острые зубы."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Термит">>
+
+	<<set $e_weapon = "Жестокие жвалы">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хшшш!", "Хщщщ!", "Шшш..."]>>
+
+	<<set $actions = ["угрожающе поднимается на задние ноги.", "свирепо шевелит жвалами.", "пристально следит за противником круглыми глазами.", "жутковато топчется на одном месте.", "перебирает ногами и шевелит усиками."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Живодёр">>
+
+	<<set $e_weapon = "Ржавый крюк">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Плесень">>
+
+	<<set $e_weapon = "Заплесневелые шипы">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 4>>
+
+	<<set $e_defBonus = 0>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["..."]>>
+
+	<<set $actions = ["даже не пытается вникнуть в происходящее, а просто растёт.", "стремится поглотить противника.", "разбрасывает повсюду свои споры.", "неспеша ползает по земле.", "рассчитывает завоевать мир."]>>
+
+<<endif>>
+
+:: Враги14[::]1216-928-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Арахнид">>
+
+	<<set $e_weapon = "Ядовитые жвалы">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хшшш!", "Хщщщ!", "Шшш..."]>>
+
+	<<set $actions = ["угрожающе поднимается на задние ноги.", "свирепо шевелит жвалами.", "пристально следит за противником многочисленными глазами.", "жутковато топчется на одном месте."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Тролль">>
+
+	<<set $e_weapon = "Суковатая дубина">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Э!", "Э?", "Э...", "Ааа!"]>>
+
+	<<set $actions = ["свирепо раскручивает свою дубину.", "помахивает своей дубиной.", "издаёт нечленораздельные звуки.", "растерянно озирается по сторонам.", "пытается найти противника.", "безуспешно старается что-то сообразить."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Преторианец">>
+
+	<<set $e_weapon = "Серебряное копьё">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 9>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Мордоворот">>
+
+	<<set $e_weapon = "Железный молот">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Огонёк">>
+
+	<<set $e_weapon = "Блуждающее остриё">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapNum = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ууу...", "Фшшш...", "Ю-ю-ю..."]>>
+
+	<<set $actions = ["неистово мерцает в воздухе.", "легко парит над землёй.", "принимается стремительно метаться из стороны в сторону.", "громко воет и шипит.", "пытается раствориться в воздухе."]>>
+
+<<endif>>
+
+:: Враги16[::]1096-1048-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Паладин">>
+
+	<<set $e_weapon = "Святой шестопёр">>
+
+	<<set $e_hpMax = 5>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 5>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 8>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Горгулья">>
+
+	<<set $e_weapon = "Каменный клюв">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 8>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аррр-аррр!", "Крааа!", "Кра-крааа!"]>>
+
+	<<set $actions = ["яростно машет каменными крыльями.", "пытается достать противника клювом и когтями.", "злобно щёлкает острым клювом.", "злобно взирает на противника.", "пристально следит за противником и роет землю."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Виверна">>
+
+	<<set $e_weapon = "Острые клыки">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аррргх!", "Ррр!", "Агррр!"]>>
+
+	<<set $actions = ["свирепо машет огромными крыльями.", "злобно рычит и скалит клыкастую пасть.", "неистово размахивает мощным хвостом.", "пристально смотрит на противника.", "громко щёлкает зубастой пастью.", "яростно роет лапами землю."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Энт">>
+
+	<<set $e_weapon = "Замшелый сук">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Уух...", "Хо-хо...", "Хм... Хм...", "Хм?.."]>>
+
+	<<set $actions = ["со скрипом шевелит ветвями.", "неистово машет ветвями.", "перебирает по земле толстыми корнями.", "размахивает ветками и сучьями.", "яростно трясёт листьями."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Фея">>
+
+	<<set $e_weapon = "Волшебная палочка">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $words = ["Хи-хи-хи!", "Ой, умора!", "Ля-ля-ля!", "Ми-ми-ми!"]>>
+
+	<<set $actions = ["разбрасывает волшебную пыльцу.", "заливается весёлым смехом.", "вертит волшебной палочкой.", "порхает, как бабочка, жалит, как пчела.", "насмешливо взирает на противника."]>>
+
+<<endif>>
+
+:: Враги17[::]1216-1048-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Голем">>
+
+	<<set $e_weapon = "Кулак голема">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ммм...", "М?", "..."]>>
+
+	<<set $actions = ["яростно топает огромными ногами.", "растерянно озирается по сторонам.", "начинает размахивать здоровенными ручищами.", "безуспешно пытается что-то сказать.", "с ненавистью глядит на противника."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Привидение">>
+
+	<<set $e_weapon = "Призрачные зубы">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ууу...", "Вау-вау!", "У-у-у..."]>>
+
+	<<set $actions = ["неистово машет полупрозрачными руками.", "легко парит над землёй.", "принимается стремительно метаться из стороны в сторону.", "громко воет и издаёт прочие неприятные звуки.", "пытается раствориться в воздухе.", "делает вид, что щёлкает зубами.", "корчит малоприятные рожи."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Бес">>
+
+	<<set $e_weapon = "Кожаный хлыст">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 7>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Морок">>
+
+	<<set $e_weapon = "Дрожащий клинок">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Лич">>
+
+	<<set $e_weapon = "Посох смерти">>
+
+	<<set $e_hpMax = 4>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 8>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Хе-хе!", "Прими смерть!", "Я пришёл за тобой!", "Покойся с миром!", "И пусть земля тебе будет пухом!", "Угомонись уже...", "Не бойся смерти..."]>>
+
+<<endif>>
+
+:: СловоПублики[::]960-792-0
+
+<<random $rnd = 1>>
+
+<<if ($hp + $rnd) / $hpMax gt $e_hp / $e_hpMax>>
+
+	<<set $text1 = $name>>
+
+	<<set $text2 = $enemyP>>
+
+<<else>>
+
+	<<set $text1 = $enemyP>>
+
+	<<set $text2 = $name>>
+
+<<endif>>
+
+<<if ($enemy eq $champName) and (!$champ)>>
+
+	<<set $text1 = $enemy>>
+
+<<endif>>
+
+<<random $rnd = 10>>
+
+<<if $rnd eq 0>>
+
+	Публика: <<print $text1>>! <<print $text1>>!
+
+<<elseif $rnd eq 1>>
+
+	Зрители: Вперёд, <<print $text1>>! Давай, <<print $text1>>!
+
+<<elseif $rnd eq 2>>
+
+	Публика: <<print $text1>>, вперёд -- пусть <<print $text2>> умрёт!
+
+<<elseif ($rnd eq 3) and ($log neq "")>>
+
+	Зрители встречают каждый удар восторженными возгласами.
+
+<<elseif $rnd eq 4>>
+
+	Зрители: <<print $text1>>! Порви всех, <<print $text1>>!
+
+<<elseif $rnd eq 5>>
+
+	Публика восторженно гудит и пускает волну.
+
+<<elseif $rnd eq 6>>
+
+	Зрители оглушительно улюлюкают и свистят.
+
+<<elseif $rnd eq 7>>
+
+	Публика: Мы с тобой, <<print $text1>>! В атаку!
+
+<<elseif ($rnd eq 8) and ($enemy eq $champName)>>
+
+	Зрительница: Я люблю тебя, <<print $text1>>!
+
+	Зритель: Я тоже люблю тебя, <<print $text1>>!
+
+<<elseif $rnd eq 9>>
+
+	Зрители: Фууу!
+
+<<else>>
+
+	Зрители уверены, что победит <<print $text1>>.
+
+<<endif>>
+
+:: Враги18[::]1336-1048-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Призрак">>
+
+	<<set $e_weapon = "Призрачный нож">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ааа...", "Ыыы...", "Нееет..."]>>
+
+	<<set $actions = ["размахивает полупрозрачным оружием.", "легко парит над землёй.", "принимается стремительно метаться из стороны в сторону.", "громко воет и издаёт прочие неприятные звуки.", "пытается раствориться в воздухе.", "злобно взирает на противника горящими глазами."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Грифон">>
+
+	<<set $e_weapon = "Острый клюв">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ррраргх!", "Краррр!", "Каррргх!"]>>
+
+	<<set $actions = ["свирепо машет огромными крыльями.", "в ярости хлещет себя хвостом по бокам.", "пристально смотрит на противника.", "громко щёлкает страшным клювом.", "поднимается на задние лапы и расправляет крылья."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Лорд">>
+
+	<<set $e_weapon = "Сияющий скимитар">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Тень">>
+
+	<<set $e_weapon = "Теневой клинок">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ахшшш...", "Ииивссс!", "Шшш...", "Ххх...", "Ссс..."]>>
+
+	<<set $actions = ["внезапно появляется и исчезает.", "угрожающе движется вперёд с тихим шипением.", "маскируется в тени.", "делает вид, что пристально смотрит на противника.", "бормочет что-то похожее на оскорбления.", "яростно размахивает теневым клинком."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Тварь">>
+
+	<<set $e_weapon = "Ядовитые шипы">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Бррр!", "Ррраш!", "Гррр!", "Абыр!"]>>
+
+<<endif>>
+
+:: Враги19[::]1096-1168-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Кошмар">>
+
+	<<set $e_weapon = "Огненный бич">>
+
+	<<set $e_hpMax = 5>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $words = ["Тебе не жить!", "Ты не пройдешь!", "Зачем ты побеспокоил меня?", "Смерть твоя близка!", "Я уничтожу тебя!"]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Божок">>
+
+	<<set $e_weapon = "Орихалковый скипетр">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Умри, смертный!", "Смерть смертным!", "Ты понятия не имеешь, кто я!", "Ты хоть знаешь, с кем связался, червь?", "Ты просто ничтожество!", "Я раздавлю тебя, как червяка, смертный!", "Хуа-хуа-хуа!", "Ты ни на что не способен, смертный!"]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Мотабль">>
+
+	<<set $e_weapon = "Гигантские рога">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 4>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Нууу!", "Ну!", "Ну! Ну! Нууу!"]>>
+
+	<<set $actions = ["неистово мотает головой.", "исподлобья глядит на противника.", "стучит копытами по земле.", "оглашает окрестности яростным рёвом.", "яростно хлещет себя хвостом по бокам.", "фыркает и злобно роет землю."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Пожиратель">>
+
+	<<set $e_weapon = "Бесконечные зубы">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аааум!", "Аууум...", "Ааам..."]>>
+
+	<<set $actions = ["разевает свою огромную пасть.", "намеревается проглотить противника целиком.", "недобро смотрит на противника.", "громко щёлкает страшными челюстями.", "с подозрением обнюхивает противника.", "качает головой."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Цербер">>
+
+	<<set $e_weapon = "Огненная пасть">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Рррав!", "Ав-ав!", "Аууу!", "Гррр!"]>>
+
+	<<set $actions = ["злобно скалится и рычит.", "угрожающе щёлкает зубами.", "пускает из пасти языки пламени.", "принимается громко лаять на противника.", "вертит глазами и пускает слюни.", "метит территорию."]>>
+
+<<endif>>
+
+:: Враги3[::]1336-448-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Пугало">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_weapon = "Ржавые грабли">>
+
+	<<set $e_weapNum = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Уууу!", "Аааа!", "Оооо!"]>>
+
+	<<set $actions = ["яростно вертит граблями.", "страшно воет и издаёт замогильные звуки.", "бестолково топчется на одном месте.", "пытается достать противника издалека.", "считает противника вредителем."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Хряк">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 2>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapon = "Кривые клыки">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хря-хря!", "Хря-хря! Уиии!", "Хру-хру-хрэ!", "Х... х... хру!", "Хрэ-хрэ!"]>>
+
+	<<set $actions = ["оглушительно хрюкает и визжит.", "демонстрирует размер своих клыков.", "неистово трясёт головой и вертит пятаком.", "не сводит взгляд с противника и свирепо роет землю."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Водяница">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Водное лезвие">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Буль!", "Буль-буууль!", "Буль-буль-буль!"]>>
+
+	<<set $actions = ["булькает и пускает пузыри.", "испускает в разные стороны водяные струи.", "формирует из воды острое лезвие.", "растекается лужицей по земле.", "постепенно начинает испаряться.", "принимается кипеть от ярости."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Убийца">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_weapon = "Топор убийцы">>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Ловкач">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 3>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapon = "Быстрые клинки">>
+
+	<<set $e_weapNum = 2>>
+
+<<endif>>
+
+:: Враги2[::]1216-448-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Плохиш">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapon = "Тупой нож">>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Хухлик">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapon = "Когти хухлика">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ху-ху!", "Ууу!", "У! У! А!"]>>
+
+	<<set $actions = ["злобно пялит огромные круглые глаза.", "скалит острые зубы.", "поднимается на задние лапы и страшно вращает глазищами."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Злыдень">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_weapon = "Корявая дубина">>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Шишига">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Зубастая пасть">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Шур-шур!", "Шииир!", "Хиииш!"]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Разбойник">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_weapon = "Разбойничий кистень">>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 4>>
+
+<<endif>>
+
+:: Враги4[::]1096-568-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Бандит">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 6>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapon = "Бандитские кинжалы">>
+
+	<<set $e_weapNum = 2>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Волк">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 2>>
+
+	<<set $e_weapon = "Острые клыки">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аррргх!", "Рррр!", "Ррравх! Ррравх!", "Аууу!"]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Давила">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_weapon = "Дубовая дубина">>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Э!", "Э?", "Э..."]>>
+
+	<<set $actions = ["раскручивает свою дубину.", "помахивает своей дубиной.", "издаёт нечленораздельные звуки.", "растерянно озирается по сторонам.", "пытается найти противника.", "безуспешно пытается что-то сообразить."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Полевик">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 8>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapon = "Дубинка полевика">>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Шевелюга">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Зубастая пасть">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Шшш...", "...", "Ахххшшш..."]>>
+
+	<<set $actions = ["омерзительно шевелится.", "принимается свирепо шевелиться.", "угрожающе шевелится.", "шевелит глазами и разевает пасть."]>>
+
+<<endif>>
+
+:: Бестиарий[::]768-592-5
+
+<<fade = 400>>
+
+<<set $enemyInfo = true>>
+
+===''Бестиарий<<br>><<print $e_level>> этаж''===
+
+----
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = $name + " прогуливается по мрачным катакомбам бестиария.">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = $name + " шагает по длинным коридорам бестиария.">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = $name + " бредёт по обширным помещениям бестиария.">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = $name + " идёт по тускло освещённым комнатам бестиария.">>
+
+<<endif>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = $text1 + " Повсюду виднеются клетки с самыми разными существами.">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = $text1 + " Прочные клетки с диковинными существами заполняют всё пространство.">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = $text1 + " Насколько хватает глаз, тянутся ряды клеток с опасными существами.">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = $text1 + " Из металлических клеток недобро глядят свирепые существа.">>
+
+<<endif>>
+
+<<display 'НовыйВраг'>>
+
+<<print $text1>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	Работник бестиария тихо идёт следом, пристально наблюдая за посетителем.
+
+<<elseif $rnd eq 1>>
+
+	Работник бестиария: Вам чем-нибудь помочь?
+
+<<elseif $rnd eq 2>>
+
+	Работник бестиария: Пришли поглазеть на моих крошек?
+
+<<elseif $rnd eq 3>>
+
+	Работник бестиария: Что вам подсказать?
+
+<<endif>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	<<print $name>>: А где здесь <<print $enemyP>>?
+
+<<elseif $rnd eq 1>>
+
+	<<print $name>>: Я знаю, что где-то тут есть <<print $enemyP>>...
+
+<<elseif $rnd eq 2>>
+
+	<<print $name>>: Не пойму, где сидит <<print $enemyP>>...
+
+<<elseif $rnd eq 3>>
+
+	<<print $name>>: Эй, ты! Покажи, где <<print $enemyP>>!
+
+<<endif>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = "Не здесь! Клетку номер десять Распорядитель велел освободить, скоро сюда какую-то девку посадят. А " + $enemyP + " вот тут! ">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = "Кто? " + $enemyP + "? Вот здесь, смотри. ">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = $enemyP + " у нас вот тут живёт. ">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = "Откуда тебе известно, что у нас есть " + $enemyP + "? Ладно, вот смотри. ">>
+
+<<endif>>
+
+<<random $rnd = 4>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = $text1 + "Лапочка, правда?">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = $text1 + $enemyP + "! Гули-гули-гули!">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = $text1 + $enemyP + "! Кысь-кысь-кысь!">>
+
+<<elseif $rnd eq 3>>
+
+	<<set $text1 = $text1 + $enemyP + ", просыпайся, к тебе пришли!">>
+
+<<elseif $rnd eq 4>>
+
+	<<set $text1 = $text1 + "Не правда ли, удивительный экземпляр?">>
+
+<<endif>>
+
+Работник бестиария: <<print $text1>>
+
+<<display 'ИнфоВрага'>>
+
+<<if $e_animal>>
+
+	<<random $rnd = 99>>
+
+	<<if $rnd lt 50>>
+
+		<<display 'СловоВрага'>>
+
+	<<else>>
+
+		<<display 'ДействиеВрага'>>
+
+	<<endif>>
+
+<<else>>
+
+	<<display 'СловоВрага'>>
+
+<<endif>>
+
+----
+
+[[Гулять на этом этаже|Бестиарий]]
+
+<<if $e_level lt Math.min(31, $level + 2)>>
+
+	[[Отправиться на следующий этаж|Бестиарий {$e_level = $e_level + 1}]]
+
+<<endif>>
+
+<<if $e_level gt 1>>
+
+	[[Вернуться на предыдущий этаж|Бестиарий {$e_level = $e_level - 1}]]
+
+<<endif>>
+
+[[Покинуть бестиарий|ЛистПерсонажа]]
+
+:: ВыборСложности[::]560-296-0
+
+<<fade = 400>>
+
+<<set $enemyInfo = false>>
+
+===''Выход на Арену''===
+
+----
+
+<<random $rnd = 4>>
+
+<<if $champ>>
+
+	<<if $rnd eq 0>>
+
+		<<set $text2 = "Приветствую тебя,">>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $text2 = "Добро пожаловать,">>
+
+	<<elseif $rnd eq 2>>
+
+		<<set $text2 = "Кого я вижу! Это же">>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $text2 = "Неужели сам Чемпион пожаловал? Проходи,">>
+
+	<<elseif $rnd eq 4>>
+
+		<<set $text2 = "Я рад тебя видеть,">>
+
+	<<endif>>
+
+	<<random $rnd = 99>>
+
+<<else>>
+
+	<<if $rnd eq 0>>
+
+		<<set $text2 = "Наконец, ты здесь,">>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $text2 = "А вот и ты,">>
+
+	<<elseif $rnd eq 2>>
+
+		<<set $text2 = "О!">>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $text2 = "Ну, здравствуй,">>
+
+	<<elseif $rnd eq 4>>
+
+		<<set $text2 = "Опять ты,">>
+
+	<<endif>>
+
+<<endif>>
+
+<<if ($champ) and ($rnd lt $champFight)>>
+
+	# Подтверждение титула Чемпиона
+
+	<<display 'ПридуматьИмя'>>
+
+	<<set $champName = $text1>>
+
+	<<set $champFight = 0>>
+
+	Распорядитель: <<print $text2>> <<print $name>>! Что ж, Чемпион, сегодня тебе предстоит подтвердить право носить свой титул. Прославленный и опытный боец по имени <<print $champName>> решил бросить тебе вызов. Не думаю, что он сможет противостоять тебе, Чемпион, но ты не можешь отказаться от этого боя. Таков закон Арены.
+
+	[[«Я сокрушу его!»|НовыйВраг {$enemy = "Чемпион Арены"}]]
+
+<<else>>
+
+	# Обычная битва или за титул Чемпиона
+
+	Распорядитель: <<print $text2>> <<print $name>>! Какого противника тебе подобрать сегодня? Попроще или посерьёзней? Ты ведь помнишь: чем сильнее противник, тем больше славы ты обретёшь, одолев его!
+
+	----
+
+	<<if $level gt 2>>
+
+		[[-«Мне самого слабого!»|НовыйВраг {$diff = -2}]]
+
+	<<endif>>
+
+	<<if $level gt 1>>
+
+		[[-«Кого-нибудь послабее!»|НовыйВраг {$diff = -1}]]
+
+	<<endif>>
+
+	[[-«Равного мне по силам!»|НовыйВраг {$diff = 0}]]
+
+	[[-«Я справлюсь и с более сильным!»|НовыйВраг {$diff = 1}]]
+
+	[[-«Мне только самого сильного!»|НовыйВраг {$diff = 2}]]
+
+	<<if (!$champ) and ($level gt 1)>>
+
+		<<if $level lt 9>>
+
+			[[+«Я хочу бросить вызов Чемпиону Арены»|НизкийУровень]]
+
+		<<elseif $glory lt 1000>>
+
+			[[+«Я хочу бросить вызов Чемпиону Арены»|МалоСлавы]]
+
+		<<else>>
+
+			[[«Я хочу бросить вызов Чемпиону Арены»|НовыйВраг {$enemy = "Чемпион Арены"} {$diff = 0}]]
+
+		<<endif>>
+
+	<<endif>>
+
+	[[«Я позже зайду»|ЛистПерсонажа]]
+
+<<endif>>
+
+:: Враги20[::]1216-1168-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Мститель">>
+
+	<<set $e_weapon = "Ночной клинок">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 8>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Василиск">>
+
+	<<set $e_weapon = "Острые когти">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 3>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Фшшш...", "Фщщщ...", "Фссс..."]>>
+
+	<<set $actions = ["угрожающе трясёт хвостом.", "с шипением выпускает из пасти раздвоенный язык.", "шипит и сворачивается кольцами.", "разевает страшную пасть с ядовитыми зубами.", "пытается загипнотизировать противника взглядом."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Дух">>
+
+	<<set $e_weapon = "Стихийный меч">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 6>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 9>>
+
+	<<set $e_attBonus = 5>>
+
+	<<set $e_defBonus = 0>>
+
+	<<set $e_weapNum = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Хооо...", "...", "Ахшшш..."]>>
+
+	<<set $actions = ["размахивает своим грозным оружием.", "легко парит над землёй.", "принимается стремительно метаться из стороны в сторону.", "громко и яростно шипит.", "злобно взирает на противника горящими глазами."]>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Хищник">>
+
+	<<set $e_weapon = "Острые зубы">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Аррргх!", "Рррр!", "Хррр!", "Хав-хав!"]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Ужас">>
+
+	<<set $e_weapon = "Сумрачный клинок">>
+
+	<<set $e_hpMax = 5>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 7>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 1>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Ха-ха-ха!", "Хо-хо-хо!", "Чтооо?", "Ууух!", "Аашшш!"]>>
+
+<<endif>>
+
+:: Враги21[::]1336-1168-5
+
+<<random $rnd = 5>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Чудовище">>
+
+	<<set $e_weapon = "Гигантские щупальца">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_gnd = 2>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ооо...", "Хооо...", "..."]>>
+
+	<<set $actions = ["грозно шевелит щупальцами.", "яростно размахивает гигантскими щупальцами.", "намеревается ухватить противника.", "злобно щёлкает пастью.", "угрожающе выпучивает глаза."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Дракон">>
+
+	<<set $e_weapon = "Струя пламени">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 3>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ничтожный человечишка!", "Я сокрушу тебя!", "Ты ни на что не способен, человечишка!", "Ты — червяк передо мной!", "Ты почувствуешь мою мощь!"]>>
+
+	<<set $actions = ["яростно размахивает хвостом.", "поднимается на задние лапы и раскрывает крылья.", "неистово машет крыльями.", "выпускает из пасти языки пламени.", "гипнотизирует противника взглядом.", "сотрясает землю мощными лапами.", "с грохотом лупит хвостом по земле."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Властелин">>
+
+	<<set $e_weapon = "Титановая секира">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 4>>
+
+	<<set $e_int = 2>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 3>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_shieldState = 4>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Элементаль">>
+
+	<<set $e_weapon = "Стихийный клинок">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Жжж!", "...", "Аххх...", "Аржжж..."]>>
+
+	<<set $actions = ["злобно сверкает глазами.", "неудержимо надвигается на противника.", "размахивает руками.", "вращается вокруг своей оси.", "пристально следит за противником.", "безмолвно разевает пасть."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Демон">>
+
+	<<set $e_weapon = "Пламенеющий клинок">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 8>>
+
+	<<set $e_defBonus = 6>>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $enemy = "Жнец">>
+
+	<<set $e_weapon = "Чёрный серп">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 5>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 4>>
+
+	<<set $e_weapNum = 1>>
+
+	<<set $words = ["Твоя гибель неизбежна, смертный.", "Умри.", "Я пришёл за тобой.", "Ты уже мёртв.", "Сопротивление тщетно.", "Всё тлен."]>>
+
+<<endif>>
+
+:: StorySubtitle[::]272-8-1
+
+Пришло время доказать свою доблесть, боец! Выбери оружие и шагни на «священную землю, окроплённую кровавыми слезами»... Сражайтесь со свирепыми противниками и покройте себя неувядаемой славой, став Чемпионом Арены! Теперь на Арене более 3000 противников, один свирепее другого, сотни тысяч видов оружия и брони, а максимальный уровень бойцов не ограничен! Так чего же вы ждёте?!
+
+:: Статистика[::]264-152-0
+
+<<fade = 400>>
+
+===''Зал славы''===
+
+----
+
+''<<print $name>>'' -- <<if $champ>>Чемпион Арены<<else>>боец<<endif>> ''<<print $level>>'' уровня. Красуется на нём ''<<print $armor>>''<<if ($wr eq 0) and ($wl eq 0)>>, а руки сжимаются грозными кулаками.<<elseif ($wr gt 0) and ($wl eq -1)>>, а в руках грозно сияет ''<<print $weapR>>''.<<elseif ($wr gt 0) and ($wl gt 0)>>. В правой его руке грозно сияет ''<<print $weapR>>'', а в левой -- ''<<print $weapL>>''.<<elseif $wr gt 0>>, а в правой руке грозно сияет ''<<print $weapR>>''.<<else>>, а в левой руке грозно сияет ''<<print $weapL>>''.<<endif>>
+
+<<set $wf_data = [$victory + $defeat, "бой", "боя", "боёв"]>>
+
+<<display 'ФормаСлова'>>
+
+<<if $victory + $defeat eq 0>>Не успел боец ещё показать себя в битвах<<if $glory eq 0>> и стяжать сколько-нибудь славы, но всё ещё, будем верить, впереди...<<else>>, но уже прославился тем, что сдал кладовщику Арены своё снаряжение, не иначе рассчитывая взять с бою чего получше. Что ж, посмотрим...<<endif>><<elseif ($victory eq 1) and ($defeat eq 0)>>Боец побывал всего в одном бою, из которого вышел победителем!<<elseif ($defeat eq 1) and ($victory eq 0)>>Боец побывал всего в одном бою, в котором и проиграл... ну, просто не повезло чуток.<<else>>Боец провёл уже ''<<print $wf_data[0]>>'' <<print $wf>><<if $victory eq 0>>, но победить пока не удалось ни в одном...<<elseif $victory eq 1>>, но победителем вышел всего из одного.<<elseif $defeat eq 0>> и одержал славные победы в каждом!<<else>> и победил в ''<<print $victory>>'' из них!<<endif>><<endif>><<if $victory gt 0>><<if $glory eq 0>> Странно только, что никто этого бойца не помнит, видать, слишком много времени уделяет он купальням да опочивальням.<<else>> За свою карьеру успел боец стяжать ''<<print $gloryTotal>>'' славы, и ведь это ещё не предел!<<endif>><<endif>>
+
+<<if $v_enemy.length gt 0>>Даже ''<<print $v_enemy>>'' дрожит в страхе, едва услышав славное имя!<<endif>> <<if ($d_enemy.length gt 0) and ($d_enemy neq $v_enemy)>>А злейший враг, ''<<print $d_enemy>>'' лишь нагло ухмыляется, припоминая свою коварную победу, но не долгим будет этот триумф.<<endif>>
+
+----
+
+===''[[Славно|ЛистПерсонажа]]''===
+
+:: СловоГероя[::]704-792-0
+
+<<random $rnd = 7>>
+
+<<if $rnd eq 0>>
+
+	<<print $name>>: Конец тебе!
+
+<<elseif $rnd eq 1>>
+
+	<<print $name>>: Клянусь, я прикончу тебя, <<print $enemyP>>!
+
+<<elseif $rnd eq 2>>
+
+	<<print $name>>: Сюда иди!
+
+<<elseif $rnd eq 3>>
+
+	<<print $name>>: Ну, давай!
+
+<<elseif $rnd eq 4>>
+
+	<<print $name>>: Тебе не жить!
+
+<<elseif $rnd eq 5>>
+
+	<<print $name>>: Иди сюда, ты, <<print $enemy>>!
+
+<<elseif $rnd eq 6>>
+
+	<<print $name>>: Увидимся в аду, <<print $enemyP>>!
+
+<<elseif $rnd eq 7>>
+
+	<<print $name>>: Настал твой смертный час, <<print $enemy>>!
+
+<<endif>>
+
+:: Арена[::]472-592-2
+
+===''Арена''===
+
+----
+
+<<display 'ДобавитьБонусы'>>
+
+<<set $tmp = "Умение" + $skill>>
+
+<<display $tmp>>
+
+<<set $damage = "">>
+
+<<set $e_damage = "">>
+
+<<if $skill gt -1>>
+
+	<<set $phase = 4>>
+
+<<elseif $phase gt 2>>
+
+	# Кто первый ходит?
+
+	<<if $int / 2 + $dex / 3 gt $e_int / 2 + $e_dex / 3>>
+
+		<<set $phase = 4>>
+
+	<<else>>
+
+		<<set $phase = 3>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if $phase eq 0>>
+
+	<<display 'ВыходПротивников'>>
+
+	----
+
+	===''[[-Изготовиться к битве|Арена {$phase = 2}]]''===
+
+<<elseif $phase eq 2>>
+
+	<<set $phase = 4>>
+
+<<elseif $phase eq 4>>
+
+	# Ходит герой
+
+	<<if (($wr_att gt 0) and ($wl_att gt 0)) or (($weapR eq "Кулак") and ($weapL eq "Кулак"))>>
+
+		# Атака двумя мечами или двумя кулаками
+
+		<<display 'Атака'>>
+
+		<<if $skill eq -1>>
+
+			<<set $phase = 5>>
+
+			<<display 'Атака'>>
+
+		<<endif>>
+
+	<<elseif ($wr_att eq 0) and ($wl_att gt 0)>>
+
+		# Атака только левым мечом
+
+		<<set $phase = 5>>
+
+		<<display 'Атака'>>
+
+	<<else>>
+
+		# Атака правым мечом или двуром
+
+		<<display 'Атака'>>
+
+	<<endif>>
+
+	<<if ($e_hp gt 0) and ($e_stun eq 0)>>
+
+		<<set $phase = 3>>
+
+		<<display 'Атака'>>
+
+		<<if $e_weapNum eq 2>>
+
+			<<display 'Атака'>>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<set $phase = 4>>
+
+<<elseif $phase eq 3>>
+
+	# Ходит враг
+
+	<<if $e_stun eq 0>>
+
+		<<display 'Атака'>>
+
+		<<if $e_weapNum eq 2>>
+
+			<<display 'Атака'>>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<if $hp gt 0>>
+
+		<<set $phase = 4>>
+
+		<<if (($wr_att gt 0) and ($wl_att gt 0)) or (($weapR eq "Кулак") and ($weapL eq "Кулак"))>>
+
+			# Атака двумя мечами или двумя кулаками
+
+			<<display 'Атака'>>
+
+			<<if $skill eq -1>>
+
+				<<set $phase = 5>>
+
+				<<display 'Атака'>>
+
+			<<endif>>
+
+		<<elseif ($wr_att eq 0) and ($wl_att gt 0)>>
+
+			# Атака левым мечом
+
+			<<set $phase = 5>>
+
+			<<display 'Атака'>>
+
+		<<else>>
+
+			# Атака правым мечом или двуром
+
+			<<display 'Атака'>>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<set $phase = 3>>
+
+<<endif>>
+
+<<if $phase gt 1>>
+
+	<<set $pr_value = $hp>>
+
+	<<set $pr_valueMax = $hpMax>>
+
+	<<display 'ИндикаторПроцесса'>>
+
+	<<set $hpBar = $pr_text>>
+
+	<<set $pr_value = $e_hp>>
+
+	<<set $pr_valueMax = $e_hpMax>>
+
+	<<display 'ИндикаторПроцесса'>>
+
+	<<set $e_hpBar = $pr_text>>
+
+	<<set $text1 = "Здоровье: " + $hp + " / " + $hpMax + "<br>Уровень: " + $level>>
+
+	<<set $text2 = "Здоровье: " + $e_hp + " / " + $e_hpMax + "<br>Уровень: " + $e_level>>
+
+	<<set $tmp = 4 - $damage.split("<br>").length>>
+
+	<<loop $tmp>>
+
+		<<set $damage = $damage + "<br>&nbsp;">>
+
+	<<endloop>>
+
+	<<if $champ>>
+
+		<<set $tmp = "Чемпион Арены " + $name>>
+
+	<<else>>
+
+		<<set $tmp = $name>>
+
+	<<endif>>
+
+	''<<row $tmp $enemyP noborder>>''{{{<<row $hpBar $e_hpBar noborder>>}}}<<row $text1 $text2 noborder>><<if $e_stun gt 0>><<set $text1 = "оглушение: " + $e_stun>>//<<row "&nbsp;" $text1 noborder>>//<<else>>//<<row "&nbsp;" "&nbsp;" noborder>>//<<endif>>''//<<row $e_damage $damage noborder>>//''
+
+	----
+
+<<endif>>
+
+<<if $phase gt 2>>
+
+	<<set $turn++>>
+
+	<<if $skill gt -1>>
+
+		<<set $s_time[$skill] = $s_timeMax[$skill]>>
+
+	<<endif>>
+
+	<<if ($e_hp eq 0) or ($hp eq 0)>>
+
+		===''[[-Битва окончена|ИтогБитвы]]''===
+
+	<<else>>
+
+		[[-Атака|Арена {$skill = -1}]]<<if $s_k[0] gt 0>>{{{ | }}}<<if $s_time[0] eq 0>>[[-Яростный удар|Арена {$skill = 0}]]<<else>>Яростный удар (<<print $s_time[0]>>)<<endif>><<endif>><<if $s_k[1] gt 0>>{{{ | }}}<<if $s_time[1] eq 0>>[[-Жестокий пинок|Арена {$skill = 1}]]<<else>>Жестокий пинок (<<print $s_time[1]>>)<<endif>><<endif>><<if ($s_k[2] gt 0) and (($wr_blk gt 0) or ($wl_blk gt 0))>>{{{ | }}}<<if $s_time[2] eq 0>>[[-Удар щитом|Арена {$skill = 2}]]<<else>>Удар щитом (<<print $s_time[2]>>)<<endif>><<endif>><<if $s_k[3] gt 0>>{{{ | }}}<<if $s_time[3] eq 0>>[[-Оглушающий удар|Арена {$skill = 3}]]<<else>>Оглушающий удар (<<print $s_time[3]>>)<<endif>><<endif>><<if $s_k[4] gt 0>>{{{ | }}}<<if $s_time[4] eq 0>>[[-Возмездие|Арена {$skill = 4}]]<<else>>Возмездие (<<print $s_time[4]>>)<<endif>><<endif>><<if $s_k[5] gt 0>>{{{ | }}}<<if $s_time[5] eq 0>>[[-Дюжина клинков|Арена {$skill = 5}]]<<else>>Дюжина клинков (<<print $s_time[5]>>)<<endif>><<endif>><<if $s_k[6] gt 0>>{{{ | }}}<<if $s_time[6] eq 0>>[[-Танцующая тень|Арена {$skill = 6}]]<<else>>Танцующая тень (<<print $s_time[6]>>)<<endif>><<endif>><<if $s_k[7] gt 0>>{{{ | }}}<<if $s_time[7] eq 0>>[[-Стальной вихрь|Арена {$skill = 7}]]<<else>>Стальной вихрь (<<print $s_time[7]>>)<<endif>><<endif>><<if $s_k[8] gt 0>>{{{ | }}}<<if $s_time[8] eq 0>>[[-Кража брони|Арена {$skill = 8}]]<<else>>Кража брони (<<print $s_time[8]>>)<<endif>><<endif>><<if $s_k[9] gt 0>>{{{ | }}}<<if $s_time[9] eq 0>>[[-Ветер смерти|Арена {$skill = 9}]]<<else>>Ветер смерти (<<print $s_time[9]>>)<<endif>><<endif>><<if $s_k[10] gt 0>>{{{ | }}}<<if $s_time[10] eq 0>>[[-Абсолютная власть|Арена {$skill = 10}]]<<else>>Абсолютная власть (<<print $s_time[10]>>)<<endif>><<endif>>{{{ | [[+(?)|ИнфоВрага]]}}}
+
+	<<endif>>
+
+	<<set $i = 0>>
+
+	<<loop $s_time.length>>
+
+		<<if $s_time[$i] gt 0>>
+
+			<<set $s_time[$i] = $s_time[$i] - 1>>
+
+		<<endif>>
+
+		<<set $i++>>
+
+	<<endloop>>
+
+	<<if $e_stun gt 0>>
+
+		<<set $e_stun = $e_stun - 1>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if $phase gt 1>>
+
+	<<if ($e_hp neq 0) and ($hp neq 0)>>
+
+		<<random $rnd = 99>>
+
+		<<if $rnd lt 50>>
+
+			<<if $e_stun eq 0>>
+
+				<<random $rnd = 99>>
+
+				<<if $rnd lt 50>>
+
+					<<display 'СловоВрага'>>
+
+				<<else>>
+
+					<<display 'ДействиеВрага'>>
+
+				<<endif>>
+
+			<<endif>>
+
+			<<random $rnd = 99>>
+
+			<<if $rnd lt 50>>
+
+				<<display 'ДействиеГероя'>>
+
+			<<else>>
+
+				<<display 'СловоГероя'>>
+
+			<<endif>>
+
+		<<else>>
+
+			<<random $rnd = 99>>
+
+			<<if $rnd lt 50>>
+
+				<<display 'ДействиеГероя'>>
+
+			<<else>>
+
+				<<display 'СловоГероя'>>
+
+			<<endif>>
+
+			<<if $e_stun eq 0>>
+
+				<<random $rnd = 99>>
+
+				<<if $rnd lt 50>>
+
+					<<display 'СловоВрага'>>
+
+				<<else>>
+
+					<<display 'ДействиеВрага'>>
+
+				<<endif>>
+
+			<<endif>>
+
+		<<endif>>
+
+		<<display 'СловоПублики'>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if ($e_hp eq 0) or ($hp eq 0)>>
+
+	<<if $hp eq 0>>
+
+		<<set $text1 = $name>>
+
+		<<set $text2 = $enemyP>>
+
+		<<if $enemy eq $champName>>
+
+			<<set $text2 = $enemy>>
+
+		<<endif>>
+
+		<<set $tmp = $e_hp / $e_hpMax>>
+
+	<<else>>
+
+		<<set $text1 = $enemyP>>
+
+		<<set $text2 = $name>>
+
+		<<set $tmp = $hp / $hpMax>>
+
+	<<endif>>
+
+	<<random $rnd = 4>>
+
+	<<if $rnd eq 0>>
+
+		Не в силах продолжать битву, <<print $text1>> падает в песок.
+
+	<<elseif $rnd eq 1>>
+
+		<<print $text1>> падает на землю, истекая кровью.
+
+	<<elseif $rnd eq 2>>
+
+		<<print $text1>> так и не может оправиться от последнего удара. Похоже, это конец.
+
+	<<elseif $rnd eq 3>>
+
+		<<print $text1>> больше не подаёт признаков жизни.
+
+	<<elseif $rnd eq 4>>
+
+		И вот <<print $text1>> валится на землю без чувств.
+
+	<<endif>>
+
+	<<random $rnd = 5>>
+
+	<<if $rnd eq 0>>
+
+		Публика ликует. Не скоро они позабудут это сражение.
+
+	<<elseif $rnd eq 1>>
+
+		<<if $tmp gt 0.4>>
+
+			Зрители: Добей! Добей! Добей!
+
+		<<else>>
+
+			Зрители: Жизнь! Жизнь! Жизнь!
+
+		<<endif>>
+
+	<<elseif $rnd eq 2>>
+
+		Зрители: Ура! Да здравствует <<print $text2>>!
+
+	<<elseif $rnd eq 3>>
+
+		Публика неистово рукоплещет, приветствуя победителя.
+
+	<<elseif $rnd eq 4>>
+
+		Публика жестоко потешается над побеждённым бойцом.
+
+	<<else>>
+
+		Публика: <<print $text2>>! <<print $text2>>! <<print $text2>>!
+
+	<<endif>>
+
+<<endif>>
+
+:: НовыйОпыт[::]552-912-6
+
+<<set $drop = "">>
+
+<<set $expNew = Math.round($e_hpMax * 0.17 + $e_str * 1.6 + $e_dex * 1.6 + $e_int + ($e_weapNum + 1) * $e_attBonus * 0.3 + $e_defBonus * 0.2)>>
+
+<<set $expNew = Math.max(Math.round(Math.random() * 5) + 1, Math.round($expNew + ($e_level - $level) * $e_level * 2.5))>>
+
+<<set $expNew = $expNew + Math.round($expNew * $int * 2 / 100)>>
+
+<<if ($weapR eq "Кулак") and ($weapL eq "Кулак")>>
+
+	<<set $expNew = $expNew + Math.round($expNew * 0.1)>>
+
+<<endif>>
+
+<<if $armor eq "Сублигакулум">>
+
+	<<set $expNew = $expNew + Math.round($expNew * 0.05)>>
+
+<<endif>>
+
+<<if $hp eq 0>>
+
+	<<set $gloryNew = Math.round($expNew * 0.36)>>
+
+	<<set $expNew = Math.round($expNew * 0.03)>>
+
+<<else>>
+
+	<<set $gloryNew = Math.round($expNew * 0.32)>>
+
+	<<set $gloryNew = $gloryNew + Math.round($gloryNew * 0.5 * (1 - $hp / $hpMax))>>
+
+	# Шанс дропа (в битве за чемпионство - 100%)
+
+	<<set $tmp = ($e_level - $level) * 15>>
+
+	<<random $rnd = 99>>
+
+	<<if ($rnd lt $tmp + 60) or ($enemy eq $champName)>>
+
+		<<random $rnd = 99>>
+
+		<<if $rnd lt 55>>
+
+			<<display 'НовоеОружие'>>
+
+		<<else>>
+
+			<<display 'НоваяБроня'>>
+
+		<<endif>>
+
+		<<set $drop = $w_name>>
+
+	<<endif>>
+
+<<endif>>
+
+:: Атака[::]320-592-4
+
+<<if $phase eq 3>>
+
+	<<set $int1 = Math.min(20, $e_int)>>
+
+	<<set $spd1 = $e_spd>>
+
+	<<set $att1 = $e_att>>
+
+	<<set $def2 = Math.round($def * $s_def)>>
+
+	<<set $ddg2 = Math.round($ddg * $s_ddg)>>
+
+	<<set $blk2 = Math.round($blk * $s_blk)>>
+
+	<<set $par2 = Math.round($par * $s_par)>>
+
+	<<if ($wr_att gt 0) or ($wl_att gt 0)>>
+
+		<<set $isWeapon2 = true>>
+
+	<<else>>
+
+		<<set $isWeapon2 = false>>
+
+	<<endif>>
+
+	<<set $shieldState2 = $shieldState>>
+
+<<else>>
+
+	<<set $int1 = $int>>
+
+	<<set $spd1 = Math.round($spd * $s_spd)>>
+
+	<<if $phase eq 4>>
+
+		<<if $s_weap>>
+
+			<<set $att1 = Math.round($attR * $s_att)>>
+
+		<<else>>
+
+			<<set $att1 = Math.round(($attR - $wr_att) * $s_att)>>
+
+		<<endif>>
+
+	<<elseif $phase eq 5>>
+
+		<<if $s_weap>>
+
+			<<set $att1 = Math.round($attL * $s_att)>>
+
+		<<else>>
+
+			<<set $att1 = Math.round(($attL - $wl_att * 0.6) * $s_att)>>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<set $def2 = Math.round($e_def * $s_def2)>>
+
+	<<set $ddg2 = $e_ddg>>
+
+	<<set $blk2 = $e_blk>>
+
+	<<set $par2 = $e_par>>
+
+	<<if $e_weapNum gt 0>>
+
+		<<set $isWeapon2 = true>>
+
+	<<else>>
+
+		<<set $isWeapon2 = false>>
+
+	<<endif>>
+
+	<<set $shieldState2 = $e_shieldState>>
+
+<<endif>>
+
+# 1 - атакует, 2 - защищается
+
+<<if $def2 gt 0>>
+
+	<<set $dmg = $att1 * Math.min(1, $att1 / $def2)>>
+
+<<else>>
+
+	<<set $dmg = $att1>>
+
+<<endif>>
+
+<<set $dmg = Math.round($dmg + Math.random() * Math.max(5, $dmg * 0.05))>>
+
+<<set $dmgText = "">>
+
+# Проверка уклонения 2
+
+<<random $rnd = 99>>
+
+<<if ($rnd lt 15 + $ddg2 - $spd1) and ($e_stun eq 0)>>
+
+	<<set $dmg = 0>>
+
+	<<set $dmgText = "–<br>Уклонение">>
+
+<<endif>>
+
+<<if ($dmgText.length eq 0) and ($shieldState2 gt 0) and ($e_stun eq 0)>>
+
+	# Не уклонился, проверка блока, если есть щит
+
+	<<random $rnd = 99>>
+
+	<<if $rnd lt 50 + $blk2 - $spd1>>
+
+		<<set $dmg = Math.max(1, $dmg - Math.round($dmg * ($shieldState2 + 70) / 100))>>
+
+		<<set $shieldState2 = Math.max(0, $shieldState2 - 5 - Math.round(Math.random() * 5))>>
+
+		<<if $shieldState2 eq 0>>
+
+			<<set $dmgText = "-" + $dmg + "<br>Щит сломан">>
+
+		<<else>>
+
+			<<set $dmgText = "-" + $dmg + "<br>Блок щитом">>
+
+		<<endif>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if ($dmgText.length eq 0) and ($isWeapon2) and ($e_stun eq 0)>>
+
+	# Не уклонился, не блокировал, проверка парирования, если есть оружие
+
+	<<random $rnd = 99>>
+
+	<<if $rnd lt 30 + $par2 - $spd1>>
+
+		<<set $dmg = Math.max(1, Math.round(Math.random() * $dmg * 0.15))>>
+
+		<<set $dmgText = "-" + $dmg + "<br>Парирование">>
+
+	<<endif>>
+
+<<endif>>
+
+<<if $dmgText.length eq 0>>
+
+	# Не избежал атаки, проверка на критический урон
+
+	<<random $rnd = 99>>
+
+	<<if $rnd lt 5 + $int1 / 2>>
+
+		<<set $dmg = $dmg + Math.round(Math.max(5, $dmg * 0.05))>>
+
+		<<set $dmg = $dmg + Math.max(3, Math.round(Math.random() * $dmg * 0.45))>>
+
+		<<set $dmgText = "-" + $dmg + "<br>Критический удар!">>
+
+	<<else>>
+
+		# Обычный урон
+
+		<<set $dmgText = "-" + $dmg + "<br>&nbsp;">>
+
+	<<endif>>
+
+<<endif>>
+
+<<if $phase eq 3>>
+
+	<<set $shieldState = $shieldState2>>
+
+	<<set $hp = Math.max(0, $hp - $dmg)>>
+
+	<<if $e_damage neq "">>
+
+		<<set $e_damage = $e_damage + "<br>">>
+
+	<<endif>>
+
+	<<set $e_damage = $e_damage + $dmgText>>
+
+<<else>>
+
+	<<set $e_shieldState = $shieldState2>>
+
+	<<set $e_hp = Math.max(0, $e_hp - $dmg)>>
+
+	<<if $damage neq "">>
+
+		<<set $damage = $damage + "<br>">>
+
+	<<endif>>
+
+	<<set $damage = $damage + $dmgText>>
+
+	<<if $dmg gt 0>>
+
+		<<random $rnd = 99>>
+
+		<<if $rnd lt $s_stun>>
+
+			<<set $e_stun = Math.round(Math.random() * 3) + 1>>
+
+		<<endif>>
+
+	<<endif>>
+
+<<endif>>
+
+:: ОпределитьОпыт[::]264-296-6
+
+<<set $expMax = Math.round($base_hpMax * 0.85 + $base_str * 9 + $base_dex * 8 + $base_int * 7)>>
+
+<<set $expMax = $expMax + Math.round($expMax * 0.17 * $level)>>
+
+# На сколько изменяется здоровье от потенциала
+
+<<set $up_hpMax = Math.min(50, Math.round(0.06 * $base_hpMax))>>
+
+:: СловоВрага[::]832-792-0
+
+<<if $words.length gt 0>>
+
+	<<set $tmp = Math.round(Math.random() * ($words.length - 1))>>
+
+	<<print $enemyP>>: <<print $words[$tmp]>>
+
+<<endif>>
+
+:: НовыйВраг[::]560-432-0
+
+<<set $s_list = false>>
+
+# Враг -- (не) животное
+
+<<set $e_animal = false>>
+
+# Род врага
+
+<<set $e_gnd = 1>>
+
+# Название щита
+
+<<set $e_shield = "Щит">>
+
+# Состояние щита (0 - щита нет, >0 - враг может блокировать удар)
+
+<<set $e_shieldState = 0>>
+
+# Название оружия
+
+<<set $e_weapon = "Оружие">>
+
+# Количество оружий (>0 - враг может парировать удар)
+
+<<set $e_weapNum = 0>>
+
+# Враг пропускает ходы
+
+<<set $e_stun = 0>>
+
+# Набор фраз
+
+<<set $words = []>>
+
+<<set $actions = []>>
+
+<<if $enemy eq "Чемпион Арены">>
+
+	# Характеристики чемпиона и претендента базируются на характеристиках героя
+
+	<<if !$champ>>
+
+		<<set $enemyP = $enemy + " " + $champName>>
+
+	<<else>>
+
+		<<set $enemyP = $champName>>
+
+	<<endif>>
+
+	<<set $enemy = $champName>>
+
+	<<random $rnd = 2>>
+
+	<<set $e_level = $level - 1 + $rnd>>
+
+	<<set $e_hpMax = Math.round($hpMax * 1.09)>>
+
+	<<set $e_str = Math.round($str * 1.05)>>
+
+	<<set $e_dex = Math.round($dex * 1.05)>>
+
+	<<set $e_int = Math.round($int * 1.05)>>
+
+	<<set $e_attBonus = Math.round(($wr_att + $wl_att) * 1.05)>>
+
+	<<set $e_defBonus = Math.round($def * 1.05)>>
+
+	<<set $e_weapNum = Math.round(Math.random()) + 1>>
+
+	<<if $e_weapNum gt 1>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 0.8)>>
+
+	<<else>>
+
+		<<set $e_shieldState = Math.round(Math.random() * 50) + 50>>
+
+	<<endif>>
+
+	<<random $rnd = 10>>
+
+	<<if $rnd eq 0>>
+
+		<<set $e_weapon = "Железный ">>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $e_weapon = "Ржавый ">>
+
+	<<elseif $rnd eq 2>>
+
+		<<set $e_weapon = "Кривой ">>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $e_weapon = "Серебряный ">>
+
+	<<elseif $rnd eq 4>>
+
+		<<set $e_weapon = "Стальной ">>
+
+	<<elseif $rnd eq 5>>
+
+		<<set $e_weapon = "Острый ">>
+
+	<<elseif $rnd eq 6>>
+
+		<<set $e_weapon = "Сияющий ">>
+
+	<<elseif $rnd eq 7>>
+
+		<<set $e_weapon = "Чёрный ">>
+
+	<<elseif $rnd eq 8>>
+
+		<<set $e_weapon = "Титановый ">>
+
+	<<elseif $rnd eq 9>>
+
+		<<set $e_weapon = "Стеклянный ">>
+
+	<<elseif $rnd eq 10>>
+
+		<<set $e_weapon = "Великанский ">>
+
+	<<endif>>
+
+	<<random $rnd = 10>>
+
+	<<if $rnd eq 0>>
+
+		<<set $e_weapon = $e_weapon + "меч">>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $e_weapon = $e_weapon + "топор">>
+
+	<<elseif $rnd eq 2>>
+
+		<<set $e_weapon = $e_weapon + "шестопёр">>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $e_weapon = $e_weapon + "моргенштерн">>
+
+	<<elseif $rnd eq 4>>
+
+		<<set $e_weapon = $e_weapon + "кинжал">>
+
+	<<elseif $rnd eq 5>>
+
+		<<set $e_weapon = $e_weapon + "тесак">>
+
+	<<elseif $rnd eq 6>>
+
+		<<set $e_weapon = $e_weapon + "бердыш">>
+
+	<<elseif $rnd eq 7>>
+
+		<<set $e_weapon = $e_weapon + "посох">>
+
+	<<elseif $rnd eq 8>>
+
+		<<set $e_weapon = $e_weapon + "кистень">>
+
+	<<elseif $rnd eq 9>>
+
+		<<set $e_weapon = $e_weapon + "гладиус">>
+
+	<<elseif $rnd eq 10>>
+
+		<<set $e_weapon = $e_weapon + "клеймор">>
+
+	<<endif>>
+
+<<else>>
+
+	# Выбор обычного врага
+
+	<<if $enemyInfo>>
+
+		<<set $diff = 0>>
+
+	<<else>>
+
+		<<set $e_level = $level + $diff>>
+
+	<<endif>>
+
+	<<set $tmp = "Враги" + $e_level>>
+
+	<<if $e_level gt 21>>
+
+		<<random $rnd = 20>>
+
+		<<set $rnd++>>
+
+		<<set $tmp = "Враги" + $rnd>>
+
+	<<endif>>
+
+	<<display $tmp>>
+
+	<<set $e_hpMax = Math.round(100 + (24 + 7 * $e_hpMax) * $e_level)>>
+
+	<<set $e_str = Math.round($e_level * 0.4 + $e_str * 0.6)>>
+
+	<<set $e_dex = Math.round($e_level * 0.4 + $e_dex * 0.6)>>
+
+	<<set $e_int = Math.round($e_level * 0.4 + $e_int * 0.6)>>
+
+	<<set $e_attBonus = Math.round(15 + $e_attBonus * 0.7 * $e_level)>>
+
+	<<set $e_defBonus = Math.round($e_defBonus * 0.7 * $e_level)>>
+
+	<<if $e_shieldState gt 0>>
+
+		<<set $e_shieldState = Math.round(30 + $e_shieldState * 0.5 * $e_level)>>
+
+	<<endif>>
+
+	<<random $rnd = 35>>
+
+	# Характеристика врага
+
+	<<set $tmp = "ая;ый;ое">>
+
+	<<if $rnd eq 0>>
+
+		<<set $enemyP = "Огромн">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.3)>>
+
+		<<set $e_dex = Math.round($e_dex * 0.8)>>
+
+	<<elseif $rnd eq 1>>
+
+		<<set $enemyP = "Тощ">>
+
+		<<set $tmp = "ая;ий;ее">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.85)>>
+
+	<<elseif $rnd eq 2>>
+
+		<<set $enemyP = "Яростн">>
+
+		<<set $e_str = Math.round($e_str * 1.2)>>
+
+	<<elseif $rnd eq 3>>
+
+		<<set $enemyP = "Жесток">>
+
+		<<set $tmp = "ая;ий;ое">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.15)>>
+
+	<<elseif $rnd eq 4>>
+
+		<<set $enemyP = "Уныл">>
+
+		<<set $e_dex = Math.round($e_dex * 0.95)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.8)>>
+
+	<<elseif $rnd eq 5>>
+
+		<<set $enemyP = "Проворн">>
+
+		<<set $e_dex = Math.round($e_dex * 1.4)>>
+
+	<<elseif $rnd eq 6>>
+
+		<<set $enemyP = "Бешен">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.19)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.9)>>
+
+	<<elseif $rnd eq 7>>
+
+		<<set $enemyP = "Угрюм">>
+
+		<<set $e_str = Math.round($e_str * 1.2)>>
+
+		<<set $e_dex = Math.round($e_dex * 0.7)>>
+
+	<<elseif $rnd eq 8>>
+
+		<<set $enemyP = "Гадк">>
+
+		<<set $tmp = "ая;ий;ое">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.98)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 1.07)>>
+
+	<<elseif $rnd eq 9>>
+
+		<<set $enemyP = "Зловещ">>
+
+		<<set $tmp = "ая;ий;ее">>
+
+		<<set $e_str = Math.round($e_str * 1.2)>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.15)>>
+
+	<<elseif $rnd eq 10>>
+
+		<<set $enemyP = "Призрачн">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 0.9)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 1.2)>>
+
+	<<elseif $rnd eq 11>>
+
+		<<set $enemyP = "Зловонн">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.95)>>
+
+		<<set $e_str = Math.round($e_str * 0.8)>>
+
+		<<set $e_int = Math.round($e_int * 1.4)>>
+
+	<<elseif $rnd eq 12>>
+
+		<<set $enemyP = "Шелестящ">>
+
+		<<set $tmp = "ая;ий;ее">>
+
+		<<set $e_dex = Math.round($e_dex * 1.3)>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.13)>>
+
+	<<elseif $rnd eq 13>>
+
+		<<set $enemyP = "Голодн">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.89)>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.12)>>
+
+	<<elseif $rnd eq 14>>
+
+		<<set $enemyP = "Матёр">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.2)>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.14)>>
+
+	<<elseif $rnd eq 15>>
+
+		<<set $enemyP = "Болотн">>
+
+		<<set $e_dex = Math.round($e_dex * 0.9)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 1.15)>>
+
+	<<elseif $rnd eq 16>>
+
+		<<set $enemyP = "Ревущ">>
+
+		<<set $tmp = "ая;ий;ее">>
+
+		<<set $e_str = Math.round($e_str * 1.3)>>
+
+	<<elseif $rnd eq 17>>
+
+		<<set $enemyP = "Горн">>
+
+		<<set $e_dex = Math.round($e_dex * 1.23)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.18)>>
+
+	<<elseif $rnd eq 18>>
+
+		<<set $enemyP = "Лесн">>
+
+		<<set $tmp = "ая;ой;ое">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.16)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 0.9)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.1)>>
+
+	<<elseif $rnd eq 19>>
+
+		<<set $enemyP = "Пустынн">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.14)>>
+
+		<<set $e_str = Math.round($e_str * 1.13)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.12)>>
+
+	<<elseif $rnd eq 20>>
+
+		<<set $enemyP = "Огненн">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.25)>>
+
+		<<set $e_dex = Math.round($e_dex * 1.15)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.9)>>
+
+	<<elseif $rnd eq 21>>
+
+		<<set $enemyP = "Снежн">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 0.9)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 0.9)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.2)>>
+
+	<<elseif $rnd eq 22>>
+
+		<<set $enemyP = "Гигантск">>
+
+		<<set $tmp = "ая;ий;ое">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.2)>>
+
+		<<set $e_str = Math.round($e_str * 1.3)>>
+
+		<<set $e_dex = Math.round($e_dex * 0.7)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.35)>>
+
+	<<elseif $rnd eq 23>>
+
+		<<set $enemyP = "Нежив">>
+
+		<<set $tmp = "ая;ой;ое">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.1)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 0.8)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.13)>>
+
+	<<elseif $rnd eq 24>>
+
+		<<set $enemyP = "Лунн">>
+
+		<<set $e_dex = Math.round($e_dex * 1.2)>>
+
+		<<set $e_str = Math.round($e_str * 0.9)>>
+
+	<<elseif $rnd eq 25>>
+
+		<<set $enemyP = "Подземн">>
+
+		<<set $e_dex = Math.round($e_dex * 0.8)>>
+
+		<<set $e_str = Math.round($e_str * 1.3)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.15)>>
+
+	<<elseif $rnd eq 26>>
+
+		<<set $enemyP = "Бел">>
+
+		<<set $e_dex = Math.round($e_dex * 1.3)>>
+
+		<<set $e_str = Math.round($e_str * 1.3)>>
+
+		<<set $e_int = Math.round($e_int * 1.1)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.1)>>
+
+	<<elseif $rnd eq 27>>
+
+		<<set $enemyP = "Сер">>
+
+		<<set $e_dex = Math.round($e_dex * 1.3)>>
+
+		<<set $e_str = Math.round($e_str * 1.1)>>
+
+		<<set $e_int = Math.round($e_int * 1.3)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.14)>>
+
+	<<elseif $rnd eq 28>>
+
+		<<set $enemyP = "Чёрн">>
+
+		<<set $e_dex = Math.round($e_dex * 1.2)>>
+
+		<<set $e_str = Math.round($e_str * 1.2)>>
+
+		<<set $e_int = Math.round($e_int * 1.2)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.34)>>
+
+	<<elseif $rnd eq 29>>
+
+		<<set $enemyP = "Красн">>
+
+		<<set $e_dex = Math.round($e_dex * 1.1)>>
+
+		<<set $e_str = Math.round($e_str * 1.4)>>
+
+		<<set $e_int = Math.round($e_int * 1.1)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.25)>>
+
+	<<elseif $rnd eq 30>>
+
+		<<set $enemyP = "Реликтов">>
+
+		<<set $e_dex = Math.round($e_dex * 0.8)>>
+
+		<<set $e_str = Math.round($e_str * 1.3)>>
+
+		<<set $e_int = Math.round($e_int * 0.6)>>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 1.4)>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.3)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 1.2)>>
+
+	<<elseif $rnd eq 31>>
+
+		<<set $enemyP = "Жидк">>
+
+		<<set $tmp = "ая;ий;ое">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.87)>>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 0.9)>>
+
+		<<set $e_defBonus = Math.round($e_defBonus * 0.8)>>
+
+	<<elseif $rnd eq 32>>
+
+		<<set $enemyP = "Прозрачн">>
+
+		<<set $e_hpMax = Math.round($e_hpMax * 0.89)>>
+
+		<<set $e_dex = Math.round($e_dex * 1.5)>>
+
+	<<elseif $rnd eq 33>>
+
+		<<set $enemyP = "Шепчущ">>
+
+		<<set $tmp = "ая;ий;ее">>
+
+		<<set $e_int = Math.round($e_int * 1.6)>>
+
+	<<elseif $rnd eq 34>>
+
+		<<set $enemyP = "Проклят">>
+
+		<<set $e_attBonus = Math.round($e_attBonus * 1.24)>>
+
+		<<set $e_str = Math.round($e_str * 1.3)>>
+
+		<<set $e_dex = Math.round($e_dex * 0.9)>>
+
+	<<elseif $rnd eq 35>>
+
+		<<set $enemyP = "Безумн">>
+
+		<<set $e_int = Math.round($e_int * 0.05)>>
+
+	<<endif>>
+
+	<<set $enemyP = $enemyP + $tmp.split(";")[$e_gnd] + " " + $enemy.toLowerCase()>>
+
+<<endif>>
+
+# Случайное увеличение характеристик
+
+<<set $e_hpMax = $e_hpMax + Math.round(Math.random() * 0.03 * $e_hpMax)>>
+
+<<set $e_str = $e_str + Math.round(Math.random() * 0.03 * $e_str)>>
+
+<<set $e_dex = $e_dex + Math.round(Math.random() * 0.03 * $e_dex)>>
+
+<<set $e_int = $e_int + Math.round(Math.random() * 0.03 * $e_int)>>
+
+<<set $e_attBonus = $e_attBonus + Math.round(Math.random() * 0.03 * $e_attBonus)>>
+
+<<set $e_defBonus = $e_defBonus + Math.round(Math.random() * 0.03 * $e_defBonus)>>
+
+# Полное здоровье
+
+<<set $e_hp = $e_hpMax>>
+
+# Уклонение
+
+<<set $e_ddg = Math.max(0, Math.round($e_str / 4 + $e_dex + $e_int / 2))>>
+
+# Блокирование
+
+<<set $e_blk = Math.max(0, Math.round($e_str / 2 + $e_dex + $e_int / 4))>>
+
+# Парирование
+
+<<set $e_par = Math.max(0, Math.round($e_str / 3 + $e_dex + $e_int / 3))>>
+
+# Скорость атаки
+
+<<set $e_spd = Math.max(0, Math.round($e_str / 2 + $e_dex * 2 + $e_int / 5))>>
+
+# Защита
+
+<<set $e_def = Math.max(0, Math.round($e_str / 2 + $e_dex / 3 + $e_int / 5) + $e_defBonus)>>
+
+# Атака
+
+<<set $e_att = Math.max(0, Math.round($e_str * 2 + $e_dex / 2 + $e_int / 4) + $e_attBonus)>>
+
+# Стандартный набор фраз для гуманоида
+
+<<if ($words.length eq 0) and (!$e_animal)>>
+
+	<<if $enemyInfo>>
+
+		<<set $words = ["Кто здесь?", "Скоро увидимся на Арене, " + $name + "!", "Ты здесь, чтобы поглумиться надо мной, " + $name + "?", "Эй, готовься к смерти, " + $name + "!", "Слышь ты, " + $name + ", я тебя запомню!", "Проваливай, " + $name + "! Мне не до тебя.", "Чего пялишься?", "Я смотрю, тебе не терпится умереть...", "Когда-то меня тоже вела дорога приключений... а потом мне прострелили колено.", "Я выслушаю, но давай скорее!"]>>
+
+	<<else>>
+
+		<<set $words = ["Готовься к смерти, " + $name + "!", "Скоро ты сдохнешь!", "Ну всё, конец тебе!", "Я тебя не боюсь, " + $name + "!", "Ну что, " + $name + ", здесь только ты и я...", "Сейчас ты у меня получишь!", "Давай, ничтожество!", "Я прикончу тебя, " + $name + "!", "Чего ждёшь? Нападай, трус!", "Ну же! Иди сюда!", "Сдавайся, глупец!", "Эй, " + $name + ", или как там тебя. Тебе конец, слышишь!", "Сражайся достойно или умри достойно!"]>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if ($actions.length eq 0) and ($e_animal)>>
+
+	<<set $actions = ["встаёт на задние лапы и страшно вращает глазищами.", "угрожающе скалит огромные острые зубы.", "неистово трясёт головой и вертит носом.", "не сводит взгляд с противника и свирепо роет землю."]>>
+
+<<endif>>
+
+<<if !$enemyInfo>>
+
+	<<fade = 0>>
+
+	# Этап битвы
+
+	<<set $phase = 0>>
+
+	# Лог одного раунда битвы
+
+	<<set $log = "">>
+
+	<<set $turn = 0>>
+
+	# Состояние щита героя
+
+	<<set $shieldState = 0>>
+
+	<<if $wl_blk gt 0>>
+
+		<<set $shieldState = 25 + $wl_def>>
+
+	<<endif>>
+
+	<<if $wr_blk gt 0>>
+
+		<<set $shieldState = $shieldState + 25 + $wr_def>>
+
+	<<endif>>
+
+	# Обнуление отката умений
+
+	<<set $i = 0>>
+
+	<<loop 10>>
+
+		<<set $s_time[$i] = 0>>
+
+		<<set $i++>>
+
+	<<endloop>>
+
+	<<set $skill = -1>>
+
+	<<goto 'Арена'>>
+
+<<endif>>
+
+:: ИтогБитвы[::]552-752-0
+
+<<fade = 400>>
+
+===''Итог битвы''===
+
+----
+
+Распорядитель игр чинно поднимается с трона, и публика замолкает.
+
+<<if $e_hp eq 0>>
+
+	<<set $text2 = $name>>
+
+	<<set $victory++>>
+
+	<<if ($e_level gt $v_turns) and ($d_enemy neq $enemyP)>>
+
+		<<set $v_turns = $e_level>>
+
+		<<set $v_enemy = $enemyP>>
+
+		<<if ($enemy eq $champName) and (!$champ)>>
+
+			<<set $v_enemy = "бывший " + $v_enemy>>
+
+		<<endif>>
+
+	<<endif>>
+
+<<else>>
+
+	<<set $text2 = $enemyP>>
+
+	<<set $defeat++>>
+
+	<<if ($e_level gt $d_turns) and ($v_enemy neq $enemyP)>>
+
+		<<set $d_turns = $e_level>>
+
+		<<set $d_enemy = $enemyP>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if ($champ) and ($enemy neq $champName)>>
+
+	<<random $rnd = 10>>
+
+	<<set $champFight = $champFight + $rnd>>
+
+<<endif>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = "В этом поединке победу одерживает " + $text2 + "!">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = "И в этом бою побеждает " + $text2 + "!">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = $text2 + " побеждает в этом сражении!">>
+
+<<else>>
+
+	<<set $text1 = "Победителем в этом поединке признаётся " + $text2 + "!">>
+
+<<endif>>
+
+<<if $enemy eq $champName>>
+
+	<<if $text2 eq $enemyP>>
+
+		<<if $champ>>
+
+			<<set $text1 = $text1 + " А это значит, что " + $enemy + " становится новым Чемпионом Арены! Слава новому Чемпиону Арены!">>
+
+		<<else>>
+
+			<<set $text1 = $text1 + " Чемпион ещё раз подтвердил, что не напрасно носит свой титул! Слава Чемпиону Арены!">>
+
+		<<endif>>
+
+	<<else>>
+
+		<<if $champ>>
+
+			<<set $text1 = $text1 + " Чемпион ещё раз подтвердил, что не напрасно носит свой титул! Слава Чемпиону Арены!">>
+
+		<<else>>
+
+			<<set $text1 = $text1 + " А это значит, что " + $name + " становится новым Чемпионом Арены! Слава новому Чемпиону Арены!">>
+
+		<<endif>>
+
+	<<endif>>
+
+	<<if $info eq 0>>
+
+		<<set $info = 1>>
+
+	<<endif>>
+
+<<endif>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	<<set $text1 = $text1 + " Слава победителю!">>
+
+<<elseif $rnd eq 1>>
+
+	<<set $text1 = $text1 + " Это был захватывающий бой!">>
+
+<<elseif $rnd eq 2>>
+
+	<<set $text1 = $text1 + " Именно так сражаются на Арене!">>
+
+<<else>>
+
+	<<set $text1 = $text1 + " Восславим победителя!">>
+
+<<endif>>
+
+Распорядитель: <<print $text1>>
+
+<<random $rnd = 3>>
+
+<<if $rnd eq 0>>
+
+	Публика: Слава победителю! Слава тебе, <<print $text2>>!
+
+<<elseif $rnd eq 1>>
+
+	Зрители: <<print $text2>>! <<print $text2>>! <<print $text2>>!
+
+<<elseif $rnd eq 2>>
+
+	Публика: Да здравствует <<print $text2>>!
+
+<<else>>
+
+	Зрители: Ура! <<print $text2>>! Ура!
+
+<<endif>>
+
+<<display 'НовыйОпыт'>>
+
+<<if ($gloryNew gt 0) and ($hp gt 0)>>
+
+	<<if $info eq 0>>
+
+		Распорядитель: Что ж, <<print $name>>. Сражайся и впредь, как сегодня. И однажды, как только наберёшься опыта и прославишься, ты сможешь, наконец, осуществить свою мечту -- бросить вызов самому Чемпиону Арены! А теперь наслаждайся заслуженным отдыхом, <<print $name>>.
+
+		<<set $info = 1>>
+
+	<<endif>>
+
+	===<<print $name>> обретает ''+<<print $gloryNew>>'' славы.===
+
+	<<set $glory = $glory + $gloryNew>>
+
+	<<set $gloryTotal = $gloryTotal + $gloryNew>>
+
+<<elseif ($gloryNew gt 0) and ($glory gt 0)>>
+
+	<<set $glory = Math.max(0, $glory - $gloryNew)>>
+
+	<<if $glory eq 0>>
+
+		===<<print $name>> теряет всю свою славу.===
+
+	<<else>>
+
+		===<<print $name>> теряет ''-<<print $gloryNew>>'' славы.===
+
+	<<endif>>
+
+<<endif>>
+
+<<if $expNew gt 0>>
+
+	===<<print $name>> получает ''+<<print $expNew>>'' опыта.===
+
+	# Цикл на всякий случай, если полученного опыта хватит сразу на несколько уровней
+
+	<<loop 99>>
+
+		<<if ($exp + $expNew gte $expMax) and ($hp gt 0)>>
+
+			===''//Повышение уровня!//''===
+
+			<<set $level++>>
+
+			# Автоматически увеличивается здоровье
+
+			<<set $base_hpMax = $base_hpMax + Math.round(0.07 * $base_hpMax)>>
+
+			<<set $sp_hpMax = $base_hpMax>>
+
+			# Плюс два очка потенциала
+
+			<<set $spMax = $spMax + 2>>
+
+			<<set $sp = $spMax>>
+
+			# Плюс очко тренировки скилов
+
+			<<set $s_points++>>
+
+			# Остаток полученного опыта переносится на следующий уровень
+
+			<<set $expNew = $expNew - $expMax + $exp>>
+
+			<<set $exp = 0>>
+
+			<<display 'ОпределитьОпыт'>>
+
+		<<else>>
+
+			<<set $exp = Math.min($expMax, $exp + $expNew)>>
+
+			<<break>>
+
+		<<endif>>
+
+	<<endloop>>
+
+<<endif>>
+
+<<if $drop neq "">>
+
+	===<<print $name>> награждается призом, и это:<<br>>''<<print $drop>>''!===
+
+<<endif>>
+
+----
+
+<<if $e_hp eq 0>>
+
+	<<if ($enemy eq $champName) and (!$champ)>>
+
+		<<set $champ = true>>
+
+		===''//Так <<print $name>> осуществляет свою мечту и становится новым Чемпионом Арены! Но это ещё не конец...//''===
+
+		===''[[-Узнать, что будет дальше|ЛистПерсонажа]]''===
+
+	<<else>>
+
+		===''[[-Покинуть Арену|ЛистПерсонажа]]''===
+
+	<<endif>>
+
+<<else>>
+
+	<<set $hp = 1>>
+
+	===''[[-Уползти с Арены|ЛистПерсонажа]]''===
+
+<<endif>>
+
+:: Враги1[::]1096-448-5
+
+<<random $rnd = 4>>
+
+<<display 'ПредыдущийВраг'>>
+
+<<if $rnd eq 0>>
+
+	<<set $enemy = "Крыса">>
+
+	<<set $e_hpMax = 7>>
+
+	<<set $e_str = 5>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 5>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 5>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Жёлтые зубы">>
+
+	<<set $e_animal = true>>
+
+	<<if $name eq "Мастерсет">>
+
+		<<set $e_hpMax = 10>>
+
+		<<set $e_str = 10>>
+
+		<<set $e_dex = 10>>
+
+		<<set $e_int = 10>>
+
+		<<set $e_attBonus = 10>>
+
+		<<set $e_defBonus = 10>>
+
+		<<set $e_animal = false>>
+
+	<<endif>>
+
+	<<set $words = ["Ххщщь!", "Крииль-крииль!", "Квиирк!"]>>
+
+	<<set $actions = ["встаёт на задние лапы и страшно вращает глазищами.", "угрожающе скалит огромные острые зубы.", "неистово трясёт головой и вертит носом.", "не сводит взгляд с противника и свирепо роет землю.", "встаёт на задние лапы и оглушительно пищит."]>>
+
+<<elseif $rnd eq 1>>
+
+	<<set $enemy = "Слизь">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 9>>
+
+	<<set $e_dex = 9>>
+
+	<<set $e_int = 4>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 0>>
+
+	<<set $e_gnd = 0>>
+
+	<<set $e_weapon = "Комочек слизи">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Ааа...", "Эээ...", "..."]>>
+
+	<<set $actions = ["отвратительно растекается по земле.", "принимает самые неожиданные и тошнотворные формы.", "бестолково ползает по земле."]>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $enemy = "Крестьянин">>
+
+	<<set $e_hpMax = 6>>
+
+	<<set $e_str = 7>>
+
+	<<set $e_dex = 6>>
+
+	<<set $e_int = 6>>
+
+	<<set $e_attBonus = 7>>
+
+	<<set $e_defBonus = 7>>
+
+	<<set $e_weapon = "Деревянные вилы">>
+
+	<<set $e_weapNum = 1>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $enemy = "Подсвинок">>
+
+	<<set $e_hpMax = 8>>
+
+	<<set $e_str = 8>>
+
+	<<set $e_dex = 7>>
+
+	<<set $e_int = 3>>
+
+	<<set $e_attBonus = 5>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapon = "Гнилые клыки">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Уиии!", "Хрю-хрю!", "Хрю-хрю... Уиии!"]>>
+
+	<<set $actions = ["оглушительно хрюкает и визжит.", "демонстрирует размер своих клыков.", "неистово трясёт головой и вертит пятаком.", "не сводит взгляд с противника и свирепо роет землю."]>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $enemy = "Червь">>
+
+	<<set $e_hpMax = 9>>
+
+	<<set $e_str = 4>>
+
+	<<set $e_dex = 8>>
+
+	<<set $e_int = 1>>
+
+	<<set $e_attBonus = 9>>
+
+	<<set $e_defBonus = 9>>
+
+	<<set $e_weapon = "Зубастая присоска">>
+
+	<<set $e_animal = true>>
+
+	<<set $words = ["Шшш...", "Щщщ...", "Ххх..."]>>
+
+	<<set $actions = ["стремительно зарывается в землю.", "бестолково ползает по кругу.", "противно извивается и шелестит."]>>
+
+<<endif>>
+
+:: ЛистПерсонажа[::]408-152-0
+
+<<fade = 0>>
+
+<<if $level eq 0>>
+
+	<<display 'Начало'>>
+
+<<endif>>
+
+<<if ($name.length lt 2) or ($name.length gt 50)>>
+
+	<<set $name = "Инви">>
+
+<<elseif $name eq "givemeweapon">>
+
+	<<display 'НовоеОружие'>>
+
+	<<set $name = "Попрошайка">>
+
+<<elseif $name eq "givemearmor">>
+
+	<<display 'НоваяБроня'>>
+
+	<<set $name = "Попрошайка">>
+
+<<elseif $name eq "youngpadavan">>
+
+	<<set $name = "Падаван">>
+
+	<<set $exp = $expMax>>
+
+<<elseif $name eq "championglory">>
+
+	<<set $name = "Славий">>
+
+	<<set $glory = 1000>>
+
+<<elseif $name eq "learnmeright">>
+
+	<<set $name = "Маэстро">>
+
+	<<set $i = 0>>
+
+	<<loop $s_k.length>>
+
+		<<if $s_k[$i] lt 10>>
+
+			<<set $s_k[$i]++>>
+
+		<<endif>>
+
+		<<set $i++>>
+
+	<<endloop>>
+
+<<elseif $name eq "epicstuff">>
+
+	<<set $e_level = $level>>
+
+	<<set $level = 100>>
+
+	<<display 'НовоеОружие'>>
+
+	<<display 'НоваяБроня'>>
+
+	<<set $level = $e_level>>
+
+	<<set $name = "Избранный">>
+
+<<endif>>
+
+<<if $champ>>
+
+	===''Чемпион Арены<<br>><<print $name>>'' [[...|НовоеИмя]] [[{{{(?)}}}|Статистика]]===
+
+<<else>>
+
+	===''<<print $name>>'' [[...|НовоеИмя]] [[{{{(?)}}}|Статистика]]===
+
+<<endif>>
+
+----
+
+<<stop 'Отдых'>>
+
+<<display 'ДобавитьБонусы'>>
+
+{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Уровень: }}}''<<print $level>>''<<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Слава: }}}''<<print $glory>>''
+
+<<set $pr_value = $hp>>
+
+<<set $pr_valueMax = $hpMax>>
+
+<<display 'ИндикаторПроцесса'>>
+
+<<set $hpBar = $pr_text>>
+
+<<set $pr_value = $exp>>
+
+<<set $pr_valueMax = $expMax>>
+
+<<display 'ИндикаторПроцесса'>>
+
+{{{&nbsp;&nbsp;&nbsp;&nbsp;Здоровье: <<print $hpBar>>}}} <<if ($sp lt $spMax) and ($base_hpMax gt $sp_hpMax)>>[[◄|ЛистПерсонажа {$sp = $sp + 1} {$base_hpMax = $base_hpMax - $up_hpMax} {$hp = $hp - $up_hpMax}]] <<elseif $spMax gt 0>>◄ <<endif>>''<<print $hp>>'' / ''<<print $hpMax>>''<<if $bonus_hpMax gt 0>>{{{ (+<<print $bonus_hpMax>>)}}}<<elseif $bonus_hpMax lt 0>>{{{ (<<print $bonus_hpMax>>)}}}<<endif>><<if $sp gt 0>> [[►|ЛистПерсонажа {$sp = $sp - 1} {$base_hpMax = $base_hpMax + $up_hpMax} {$hp = $hp + $up_hpMax}]]<<elseif $spMax gt 0>> ►<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Опыт: <<print $pr_text>>}}} ''<<print $exp>>'' / ''<<print $expMax>>''
+
+{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Сила: }}}<<if ($sp lt $spMax) and ($base_str gt $sp_str)>>[[◄|ЛистПерсонажа {$sp = $sp + 1} {$base_str = $base_str - 1}]] <<elseif $spMax gt 0>>◄ <<endif>>''<<print $str>>''<<if $bonus_str gt 0>>{{{ (+<<print $bonus_str>>)}}}<<elseif $bonus_str lt 0>>{{{ (<<print $bonus_str>>)}}}<<endif>><<if $sp gt 0>> [[►|ЛистПерсонажа {$sp = $sp - 1} {$base_str = $base_str + 1}]]<<elseif $spMax gt 0>> ►<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;Ловкость: }}}<<if ($sp lt $spMax) and ($base_dex gt $sp_dex)>>[[◄|ЛистПерсонажа {$sp = $sp + 1} {$base_dex = $base_dex - 1}]] <<elseif $spMax gt 0>>◄ <<endif>>''<<print $dex>>''<<if $bonus_dex gt 0>>{{{ (+<<print $bonus_dex>>)}}}<<elseif $bonus_dex lt 0>>{{{ (<<print $bonus_dex>>)}}}<<endif>><<if $sp gt 0>> [[►|ЛистПерсонажа {$sp = $sp - 1} {$base_dex = $base_dex + 1}]]<<elseif $spMax gt 0>> ►<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Разум: }}}<<if ($sp lt $spMax) and ($base_int gt $sp_int)>>[[◄|ЛистПерсонажа {$sp = $sp + 1} {$base_int = $base_int - 1}]] <<elseif $spMax gt 0>>◄ <<endif>>''<<print $int>>''<<if $bonus_int gt 0>>{{{ (+<<print $bonus_int>>)}}}<<elseif $bonus_int lt 0>>{{{ (<<print $bonus_int>>)}}}<<endif>><<if $sp gt 0>> [[►|ЛистПерсонажа {$sp = $sp - 1} {$base_int = $base_int + 1}]]<<elseif $spMax gt 0>> ►<<endif>>
+
+<<if $spMax gt 0>>
+
+	{{{&nbsp;&nbsp;&nbsp;Потенциал: }}} ''<<print $sp>>'' / ''<<print $spMax>>''
+
+	----
+
+	<<if $sp gt 0>>
+
+		===''//<<print $name>> может распределить потенциал по характеристикам.//''===
+
+	<<else>>
+
+		===''[[Готово|ПрименитьПотенциал]]''===
+
+	<<endif>>
+
+<<else>>
+
+	<<if (($wr_att gt 0) and ($wl_att gt 0)) or (($wl eq 0) and ($wr eq 0))>>{{{Атака правой: }}}''<<print $attR>>''<<if $bonus_attR gt 0>>{{{ (+<<print $bonus_attR>>)}}}<<elseif $bonus_attR lt 0>>{{{ (<<print $bonus_attR>>)}}}<<endif>><<br>>{{{&nbsp;Атака левой: }}}''<<print $attL>>''<<if $bonus_attL gt 0>>{{{ (+<<print $bonus_attL>>)}}}<<elseif $bonus_attL lt 0>>{{{ (<<print $bonus_attL>>)}}}<<endif>><<elseif $wr_att gt 0>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Атака: }}}''<<print $attR>>''<<if $bonus_attR gt 0>>{{{ (+<<print $bonus_attR>>)}}}<<elseif $bonus_attR lt 0>>{{{ (<<print $bonus_attR>>)}}}<<endif>><<elseif $wl_att gt 0>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Атака: }}}''<<print $attL>>''<<if $bonus_attL gt 0>>{{{ (+<<print $bonus_attL>>)}}}<<elseif $bonus_attL lt 0>>{{{ (<<print $bonus_attL>>)}}}<<endif>><<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Защита: }}}''<<print $def>>''<<if $bonus_def gt 0>>{{{ (+<<print $bonus_def>>)}}}<<elseif $bonus_def lt 0>>{{{ (<<print $bonus_def>>)}}}<<endif>>
+
+	{{{&nbsp;&nbsp;&nbsp;&nbsp;Скорость: }}}''<<print $spd>>''<<if $bonus_spd gt 0>>{{{ (+<<print $bonus_spd>>)}}}<<elseif $bonus_spd lt 0>>{{{ (<<print $bonus_spd>>)}}}<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;Уклонение: }}}''<<print $ddg>>''<<if $bonus_ddg gt 0>>{{{ (+<<print $bonus_ddg>>)}}}<<elseif $bonus_ddg lt 0>>{{{ (<<print $bonus_ddg>>)}}}<<endif>><<br>>{{{&nbsp;Парирование: }}}''<<print $par>>''<<if $bonus_par gt 0>>{{{ (+<<print $bonus_par>>)}}}<<elseif $bonus_par lt 0>>{{{ (<<print $bonus_par>>)}}}<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Блок: }}}''<<print $blk>>''<<if $bonus_blk gt 0>>{{{ (+<<print $bonus_blk>>)}}}<<elseif $bonus_blk lt 0>>{{{ (<<print $bonus_blk>>)}}}<<endif>>
+
+	<<if $wl gt -1>>{{{&nbsp;Правая рука: }}}<<else>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;В руках: }}}<<endif>><<print $weapR>> [[...|Оружейная {$tab = 0} {$pageW = Math.floor($wr / 5) * 5}]]<<if $wl gt -1>><<br>>{{{&nbsp;&nbsp;Левая рука: }}}<<print $weapL>> [[...|Оружейная {$tab = 0} {$pageW = Math.floor($wl / 5) * 5}]]<<endif>><<br>>{{{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Броня: }}}<<print $armor>> [[...|Оружейная {$tab = 1} {$pageA = Math.floor($ar / 5) * 5}]]
+
+	----
+
+	<<if $hp gt $hpMax / 10>>
+
+		===''[[-Выйти на Арену|ВыборСложности {$enemy = ""}]]''===
+
+	<<else>>
+
+		===''//<<print $name>> пока не может сражаться.//''===
+
+	<<endif>>
+
+	===''[[Зайти в оружейную|Оружейная]]''===
+
+	<<if $hp lt $hpMax>>
+
+		===''[[-Отдохнуть и набраться сил|Отдохнуть]]''===
+
+	<<endif>>
+
+	===''[[Вспомнить приёмы|СписокУмений {$skill = -1}]]''===
+
+	===''[[Заглянуть в бестиарий|Бестиарий {$e_level = $level}]]''===
+
+<<endif>>
+
+:: ДвуручноеОружие[::]1112-40-4
+
+<<if $invHar[$i].indexOf("двуручное") gt -1>>
+
+	<<set $w_2h = true>>
+
+<<else>>
+
+	<<set $w_2h = false>>
+
+<<endif>>
+
+:: ПараметрыБрони[::]984-160-4
+
+<<set $w_name = "Сублигакулум">>
+
+<<set $w_att = 0>>
+
+<<set $w_def = 0>>
+
+<<set $w_blk = 0>>
+
+<<set $w_ddg = 0>>
+
+<<set $w_par = 0>>
+
+<<set $w_spd = 0>>
+
+<<set $w_gnd = 1>>
+
+<<set $w_hpMax = 0>>
+
+<<set $w_str = 0>>
+
+<<set $w_dex = 0>>
+
+<<set $w_int = 0>>
+
+<<set $w_2h = false>>
+
+<<set $w_shld = false>>
+
+<<set $tmp = $weapon.split("; ")>>
+
+<<set $j = 0>>
+
+<<loop $tmp.length>>
+
+	<<if $tmp[$j].indexOf("Защ") gt -1>>
+
+		<<set $w_def = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Здо") gt -1>>
+
+		<<set $w_hpMax = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Сил") gt -1>>
+
+		<<set $w_str = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Лов") gt -1>>
+
+		<<set $w_dex = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Раз") gt -1>>
+
+		<<set $w_int = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Укл") gt -1>>
+
+		<<set $w_ddg = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Пар") gt -1>>
+
+		<<set $w_par = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Ско") gt -1>>
+
+		<<set $w_spd = $tmp[$j].split(" ")[1] * 1>>
+
+	<<endif>>
+
+	<<set $j++>>
+
+<<endloop>>
+
+:: СбросБрони[::]984-40-4
+
+# Название брони
+
+<<set $armor = "Сублигакулум">>
+
+# Защитные свойства брони (процент блокируемого урона)
+
+<<set $a_def = 0>>
+
+# Бонусы брони
+
+<<set $a_str = 0>>
+
+<<set $a_dex = 0>>
+
+<<set $a_int = 0>>
+
+<<set $a_hpMax = 0>>
+
+<<set $a_ddg = 0>>
+
+<<set $a_spd = 0>>
+
+<<set $a_par = 0>>
+
+:: ПредыдущийВраг[::]1216-296-4
+
+# Проверка на предыдущего врага, чтобы не было 2 одинаковых подряд
+
+<<if $e_last eq $rnd>>
+
+	<<if $rnd gt 0>>
+
+		<<set $rnd = $rnd - 1>>
+
+	<<else>>
+
+		<<set $rnd = $rnd + 1>>
+
+	<<endif>>
+
+<<endif>>
+
+<<set $e_last = $rnd>>
+
+:: НоваяБроня[::]48-744-4
+
+# Харки брони
+
+<<set $w_name = "Сублигакулум">>
+
+<<set $w_bonus = "">>
+
+<<set $w_att = 0>>
+
+<<set $w_def = 0>>
+
+<<set $w_blk = 0>>
+
+<<set $w_ddg = 0>>
+
+<<set $w_par = 0>>
+
+<<set $w_spd = 0>>
+
+<<set $w_gnd = 1>>
+
+<<set $w_hpMax = 0>>
+
+<<set $w_str = 0>>
+
+<<set $w_dex = 0>>
+
+<<set $w_int = 0>>
+
+<<set $w_2h = false>>
+
+<<set $w_shld = false>>
+
+<<set $setW = -2>>
+
+<<set $rnd = Math.round(Math.random() * Math.min(13, $level + 3)) + 1>>
+
+<<if $rnd eq 1>>
+
+	<<set $w_name = "Пояс">>
+
+	<<set $w_def = 5>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $w_name = "Накидка">>
+
+	<<set $w_def = 9>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $w_name = "Ремень">>
+
+	<<set $w_def = 14>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $w_name = "Пластина">>
+
+	<<set $w_def = 21>>
+
+	<<set $w_spd = -2>>
+
+	<<set $w_ddg = -1>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $w_name = "Куртка">>
+
+	<<set $w_def = 18>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 6>>
+
+	<<set $w_name = "Нагрудник">>
+
+	<<set $w_def = 30>>
+
+	<<set $w_ddg = -1>>
+
+	<<set $w_spd = -1>>
+
+<<elseif $rnd eq 7>>
+
+	<<set $w_name = "Кираса">>
+
+	<<set $w_def = 35>>
+
+	<<set $w_spd = -1>>
+
+	<<set $w_ddg = -3>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 8>>
+
+	<<set $w_name = "Панцирь">>
+
+	<<set $w_def = 37>>
+
+	<<set $w_spd = -2>>
+
+	<<set $w_ddg = -3>>
+
+<<elseif $rnd eq 9>>
+
+	<<set $w_name = "Кольчуга">>
+
+	<<set $w_def = 29>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 10>>
+
+	<<set $w_name = "Чешуя">>
+
+	<<set $w_def = 38>>
+
+	<<set $w_ddg = -1>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 11>>
+
+	<<set $w_name = "Броня">>
+
+	<<set $w_def = 42>>
+
+	<<set $w_spd = -3>>
+
+	<<set $w_ddg = -2>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 12>>
+
+	<<set $w_name = "Ламелляр">>
+
+	<<set $w_def = 46>>
+
+	<<set $w_ddg = -1>>
+
+	<<set $w_spd = -2>>
+
+<<elseif $rnd eq 13>>
+
+	<<set $w_name = "Латы">>
+
+	<<set $w_def = 47>>
+
+	<<set $w_ddg = -3>>
+
+	<<set $w_spd = -2>>
+
+	<<set $w_gnd = 3>>
+
+<<elseif $rnd eq 14>>
+
+	<<set $w_name = "Доспех">>
+
+	<<set $w_def = 50>>
+
+	<<set $w_ddg = -4>>
+
+	<<set $w_spd = -1>>
+
+<<endif>>
+
+<<set $w_har = "">>
+
+<<set $w_end = "ый">>
+
+<<set $rnd = Math.round(Math.random() * Math.min(13, $level + 2)) + 1>>
+
+<<if $rnd eq 1>>
+
+	<<set $w_har = "Кожан">>
+
+	<<set $w_spd = $w_spd + 4>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $w_har = "Хитинов">>
+
+	<<set $w_def = Math.round($w_def * 1.05)>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $w_har = "Жестян">>
+
+	<<set $w_end = "ой">>
+
+	<<set $w_def = 4 + Math.round($w_def * 1.07)>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $w_har = "Медн">>
+
+	<<set $w_def = 5 + Math.round($w_def * 1.1)>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $w_har = "Бронзов">>
+
+	<<set $w_def = 9 + Math.round($w_def * 1.15)>>
+
+	<<set $w_spd = $w_spd - 4>>
+
+<<elseif $rnd eq 6>>
+
+	<<set $w_har = "Железн">>
+
+	<<set $w_def = 12 + Math.round($w_def * 1.19)>>
+
+<<elseif $rnd eq 7>>
+
+	<<set $w_har = "Стальн">>
+
+	<<set $w_end = "ой">>
+
+	<<set $w_def = 15 + Math.round($w_def * 1.25)>>
+
+<<elseif $rnd eq 8>>
+
+	<<set $w_har = "Серебрян">>
+
+	<<set $w_def = 14 + Math.round($w_def * 1.22)>>
+
+	<<set $w_spd = $w_spd + 5>>
+
+<<elseif $rnd eq 9>>
+
+	<<set $w_har = "Нефритов">>
+
+	<<set $w_def = 17 + Math.round($w_def * 1.29)>>
+
+	<<set $w_spd = $w_spd - 6>>
+
+<<elseif $rnd eq 10>>
+
+	<<set $w_har = "Обсидианов">>
+
+	<<set $w_def = 18 + Math.round($w_def * 1.34)>>
+
+	<<set $w_spd = $w_spd - 3>>
+
+<<elseif $rnd eq 11>>
+
+	<<set $w_har = "Золот">>
+
+	<<set $w_end = "ой">>
+
+	<<set $w_def = 16 + Math.round($w_def * 1.33)>>
+
+	<<set $w_hpMax = 30>>
+
+<<elseif $rnd eq 12>>
+
+	<<set $w_har = "Титанов">>
+
+	<<set $w_def = 20 + Math.round($w_def * 1.38)>>
+
+	<<set $w_dex = 1>>
+
+	<<set $w_str = 1>>
+
+<<elseif $rnd eq 13>>
+
+	<<set $w_har = "Мифрилов">>
+
+	<<set $w_def = 20 + Math.round($w_def * 1.43)>>
+
+	<<set $w_dex = 2>>
+
+<<elseif $rnd eq 14>>
+
+	<<set $w_har = "Алмазн">>
+
+	<<set $w_def = 25 + Math.round($w_def * 1.45)>>
+
+	<<set $w_int = 2>>
+
+<<endif>>
+
+<<if $w_gnd eq 0>>
+
+	<<set $w_har = $w_har + "ая">>
+
+<<elseif $w_gnd eq 1>>
+
+	<<set $w_har = $w_har + $w_end>>
+
+<<elseif $w_gnd eq 3>>
+
+	<<set $w_har = $w_har + "ые">>
+
+<<endif>>
+
+<<if $w_har.length gt 2>>
+
+	<<set $w_name = $w_har + " " + $w_name.toLowerCase()>>
+
+<<endif>>
+
+<<display 'ДопХарактеристики'>>
+
+<<set $invA.push($w_name)>>
+
+<<set $invAHar.push($w_bonus)>>
+
+:: ДопХарактеристики[::]48-880-4
+
+<<set $rnd = Math.round(Math.random() * Math.min(37, $level + 15))>>
+
+<<set $w_har = "">>
+
+<<if $rnd eq 1>>
+
+	<<set $w_har = "cлизи">>
+
+	<<set $w_int = $w_int - 2>>
+
+	<<set $w_spd = $w_spd + 5>>
+
+	<<set $w_par = $w_par - 5>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $w_har = "смерти">>
+
+	<<set $w_int = $w_int - 1>>
+
+	<<set $w_str = $w_str - 1>>
+
+	<<set $w_dex = $w_dex - 1>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $w_har = "гнили">>
+
+	<<set $w_att = $w_att - 5>>
+
+	<<set $w_def = $w_def - 5>>
+
+	<<set $w_str = $w_str - 1>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $w_har = "забвения">>
+
+	<<set $w_int = $w_int - 3>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $w_har = "убийцы">>
+
+	<<set $w_att = $w_att + 8>>
+
+	<<set $w_def = $w_def + 6>>
+
+<<elseif $rnd eq 6>>
+
+	<<set $w_har = "бревна">>
+
+	<<set $w_int = $w_int - 1>>
+
+	<<set $w_ddg = $w_ddg - 4>>
+
+	<<set $w_def = $w_def + 15>>
+
+<<elseif $rnd eq 7>>
+
+	<<set $w_har = "болота">>
+
+	<<set $w_int = $w_int - 2>>
+
+	<<set $w_hpMax = $w_hpMax + 25>>
+
+<<elseif $rnd eq 8>>
+
+	<<set $w_har = "мертвеца">>
+
+	<<set $w_spd = $w_spd + 10>>
+
+	<<set $w_def = $w_def - 15>>
+
+<<elseif $rnd eq 9>>
+
+	<<set $w_har = "леса">>
+
+	<<set $w_par = $w_par + 12>>
+
+<<elseif $rnd eq 10>>
+
+	<<set $w_har = "лорда">>
+
+	<<set $w_blk = $w_blk + 8>>
+
+	<<set $w_def = $w_def + 8>>
+
+<<elseif $rnd eq 11>>
+
+	<<set $w_har = "судьбы">>
+
+	<<set $w_par = $w_par + 5>>
+
+	<<set $w_ddg = $w_ddg + 6>>
+
+<<elseif $rnd eq 12>>
+
+	<<set $w_har = "разбойника">>
+
+	<<set $w_spd = $w_spd + 5>>
+
+<<elseif $rnd eq 13>>
+
+	<<set $w_har = "ужаса">>
+
+	<<set $w_att = $w_att + 10>>
+
+	<<set $w_def = $w_def - 5>>
+
+<<elseif $rnd eq 14>>
+
+	<<set $w_har = "мародёра">>
+
+	<<set $w_dex = $w_dex - 1>>
+
+	<<set $w_att = $w_att + 5>>
+
+<<elseif $rnd eq 15>>
+
+	<<set $w_har = "черепахи">>
+
+	<<set $w_def = $w_def + 5>>
+
+	<<set $w_blk = $w_blk + 6>>
+
+	<<set $w_spd = $w_spd - 5>>
+
+<<elseif $rnd eq 16>>
+
+	<<set $w_har = "ярости">>
+
+	<<set $w_att = $w_att + 5>>
+
+	<<set $w_spd = $w_spd + 5>>
+
+<<elseif $rnd eq 17>>
+
+	<<set $w_har = "карлика">>
+
+	<<set $w_dex = $w_dex + 1>>
+
+	<<set $w_int = $w_int + 1>>
+
+<<elseif $rnd eq 18>>
+
+	<<set $w_har = "короля">>
+
+	<<set $w_int = $w_int + 2>>
+
+	<<set $w_def = $w_def + 8>>
+
+<<elseif $rnd eq 19>>
+
+	<<set $w_har = "феи">>
+
+	<<set $w_dex = $w_dex + 2>>
+
+<<elseif $rnd eq 20>>
+
+	<<set $w_har = "акробата">>
+
+	<<set $w_dex = $w_dex + 2>>
+
+<<elseif $rnd eq 21>>
+
+	<<set $w_har = "медведя">>
+
+	<<set $w_str = $w_str + 2>>
+
+	<<set $w_ddg = $w_ddg - 3>>
+
+<<elseif $rnd eq 22>>
+
+	<<set $w_har = "призрака">>
+
+	<<set $w_spd = $w_spd + 9>>
+
+	<<set $w_ddg = $w_ddg + 9>>
+
+	<<set $w_hpMax = $w_hpMax - 20>>
+
+<<elseif $rnd eq 23>>
+
+	<<set $w_har = "избранного">>
+
+	<<set $w_spd = $w_spd + 10>>
+
+	<<set $w_ddg = $w_ddg + 10>>
+
+<<elseif $rnd eq 24>>
+
+	<<set $w_har = "хряка">>
+
+	<<set $w_hpMax = $w_hpMax + 40>>
+
+<<elseif $rnd eq 25>>
+
+	<<set $w_har = "холмов">>
+
+	<<set $w_hpMax = $w_hpMax + 60>>
+
+<<elseif $rnd eq 26>>
+
+	<<set $w_har = "здоровяка">>
+
+	<<set $w_int = $w_int - 1>>
+
+	<<set $w_hpMax = $w_hpMax + 50>>
+
+<<elseif $rnd eq 27>>
+
+	<<set $w_har = "повстанца">>
+
+	<<set $w_str = $w_str + 1>>
+
+	<<set $w_dex = $w_dex + 1>>
+
+<<elseif $rnd eq 28>>
+
+	<<set $w_har = "предателя">>
+
+	<<set $w_int = $w_int + 2>>
+
+	<<set $w_par = $w_par - 6>>
+
+<<elseif $rnd eq 29>>
+
+	<<set $w_har = "предков">>
+
+	<<set $w_int = $w_int + 1>>
+
+	<<set $w_blk = $w_blk + 13>>
+
+<<elseif $rnd eq 30>>
+
+	<<set $w_har = "крысы">>
+
+	<<set $w_dex = $w_dex + 1>>
+
+	<<set $w_def = $w_def - 5>>
+
+<<elseif $rnd eq 31>>
+
+	<<set $w_har = "духа">>
+
+	<<set $w_int = $w_int + 1>>
+
+	<<set $w_ddg = $w_ddg + 5>>
+
+<<elseif $rnd eq 32>>
+
+	<<set $w_har = "поглощения">>
+
+	<<set $w_def = $w_def + 25>>
+
+<<elseif $rnd eq 33>>
+
+	<<set $w_har = "жизни">>
+
+	<<set $w_hpMax = $w_hpMax + 90>>
+
+<<elseif $rnd eq 34>>
+
+	<<set $w_har = "мудрости">>
+
+	<<set $w_int = $w_int + 3>>
+
+<<elseif $rnd eq 35>>
+
+	<<set $w_har = "ловкости">>
+
+	<<set $w_dex = $w_dex + 3>>
+
+<<elseif $rnd eq 36>>
+
+	<<set $w_har = "силы">>
+
+	<<set $w_str = $w_str + 3>>
+
+<<elseif $rnd eq 37>>
+
+	<<set $w_har = "богов">>
+
+	<<set $w_hpMax = $w_hpMax + 100>>
+
+	<<set $w_int = $w_int + 2>>
+
+	<<set $w_str = $w_str + 2>>
+
+	<<set $w_dex = $w_dex + 2>>
+
+<<endif>>
+
+<<if $w_har.length gt 0>>
+
+	<<set $w_name = $w_name + " " + $w_har>>
+
+<<endif>>
+
+<<set $w_har = "">>
+
+<<set $w_end = "ая;ый;ое;ые">>
+
+<<set $w_k = 0>>
+
+<<random $rnd = 99>>
+
+<<if $rnd lt 70>>
+
+	<<set $rnd = Math.round(Math.random() * Math.min(29, $level + 10)) + 1>>
+
+<<else>>
+
+	<<set $rnd = 0>>
+
+<<endif>>
+
+<<if $rnd eq 1>>
+
+	<<set $w_har = "Ржав">>
+
+	<<set $w_k = -0.15>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $w_har = "Сломанн">>
+
+	<<set $w_k = -0.25>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $w_har = "Крив">>
+
+	<<set $w_end = "ая;ой;ое;ые">>
+
+	<<set $w_k = -0.2>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $w_har = "Погнут">>
+
+	<<set $w_k = -0.12>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $w_har = "Крепк">>
+
+	<<set $w_end = "ая;ий;ое;ие">>
+
+	<<set $w_k = 0.05>>
+
+<<elseif $rnd eq 6>>
+
+	<<set $w_har = "Проклят">>
+
+	<<set $w_k = -0.08>>
+
+<<elseif $rnd eq 7>>
+
+	<<set $w_har = "Неудобн">>
+
+	<<set $w_k = -0.05>>
+
+<<elseif $rnd eq 8>>
+
+	<<set $w_har = "Качественн">>
+
+	<<set $w_k = 0.1>>
+
+<<elseif $rnd eq 9>>
+
+	<<set $w_har = "Воображаем">>
+
+	<<set $w_k = -0.3>>
+
+<<elseif $rnd eq 10>>
+
+	<<set $w_har = "Блестящ">>
+
+	<<set $w_end = "ая;ий;ее;ие">>
+
+	<<set $w_k = 0.08>>
+
+<<elseif $rnd eq 11>>
+
+	<<set $w_har = "Потерянн">>
+
+	<<set $w_k = -0.03>>
+
+<<elseif $rnd eq 12>>
+
+	<<set $w_har = "Сияющ">>
+
+	<<set $w_end = "ая;ий;ее;ие">>
+
+	<<set $w_k = 0.15>>
+
+<<elseif $rnd eq 13>>
+
+	<<set $w_har = "Забыт">>
+
+	<<set $w_k = -0.09>>
+
+<<elseif $rnd eq 14>>
+
+	<<set $w_har = "Пламенеющ">>
+
+	<<set $w_end = "ая;ий;ее;ие">>
+
+	<<set $w_k = 0.2>>
+
+<<elseif $rnd eq 15>>
+
+	<<set $w_har = "Отравленн">>
+
+	<<set $w_k = 0.16>>
+
+<<elseif $rnd eq 16>>
+
+	<<set $w_har = "Знаменит">>
+
+	<<set $w_k = 0.24>>
+
+<<elseif $rnd eq 17>>
+
+	<<set $w_har = "Призрачн">>
+
+	<<set $w_k = 0.18>>
+
+<<elseif $rnd eq 18>>
+
+	<<set $w_har = "Ледян">>
+
+	<<set $w_end = "ая;ой;ое;ые">>
+
+	<<set $w_k = 0.3>>
+
+<<elseif $rnd eq 19>>
+
+	<<set $w_har = "Испепеляющ">>
+
+	<<set $w_end = "ая;ий;ее;ие">>
+
+	<<set $w_k = 0.4>>
+
+<<elseif $rnd eq 20>>
+
+	<<set $w_har = "Небесн">>
+
+	<<set $w_k = 0.5>>
+
+<<elseif $rnd eq 21>>
+
+	<<set $w_har = "Звёздн">>
+
+	<<set $w_k = 0.6>>
+
+<<elseif $rnd eq 22>>
+
+	<<set $w_har = "Велик">>
+
+	<<set $w_end = "ая;ий;ое;ие">>
+
+	<<set $w_k = 0.9>>
+
+<<elseif $rnd eq 23>>
+
+	<<set $w_har = "Свят">>
+
+	<<set $w_end = "ая;ой;ое;ые">>
+
+	<<set $w_k = 0.7>>
+
+<<elseif $rnd eq 24>>
+
+	<<set $w_har = "Священн">>
+
+	<<set $w_k = 1.2>>
+
+<<elseif $rnd eq 25>>
+
+	<<set $w_har = "Героическ">>
+
+	<<set $w_end = "ая;ий;ое;ие">>
+
+	<<set $w_k = 1>>
+
+<<elseif $rnd eq 26>>
+
+	<<set $w_har = "Легендарн">>
+
+	<<set $w_k = 1.4>>
+
+<<elseif $rnd eq 27>>
+
+	<<set $w_har = "Мифическ">>
+
+	<<set $w_end = "ая;ий;ое;ие">>
+
+	<<set $w_k = 1.7>>
+
+<<elseif $rnd eq 28>>
+
+	<<set $w_har = "Демоническ">>
+
+	<<set $w_end = "ая;ий;ое;ие">>
+
+	<<set $w_k = 2.1>>
+
+<<elseif $rnd eq 29>>
+
+	<<set $w_har = "Дракон">>
+
+	<<set $w_end = "ья;ий;ье;ие">>
+
+	<<set $w_k = 2.6>>
+
+<<elseif $rnd eq 30>>
+
+	<<set $w_har = "Божественн">>
+
+	<<set $w_k = 3>>
+
+<<endif>>
+
+<<set $w_end = $w_end.split(";")>>
+
+<<set $w_har = $w_har + $w_end[$w_gnd]>>
+
+<<if ($w_har.length gt 2) and ($w_k neq 0)>>
+
+	<<set $w_name = $w_har + " " + $w_name.toLowerCase()>>
+
+	<<if $w_att gt 0>>
+
+		<<set $w_att = Math.max(0, $w_att + Math.round($w_att * $w_k))>>
+
+	<<elseif $w_att lt 0>>
+
+		<<set $w_att = Math.min(0, $w_att + Math.round(Math.abs($w_att) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_blk gt 0>>
+
+		<<set $w_blk = Math.max(0, $w_blk + Math.round($w_blk * $w_k))>>
+
+	<<elseif $w_blk lt 0>>
+
+		<<set $w_blk = Math.min(0, $w_blk + Math.round(Math.abs($w_blk) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_hpMax gt 0>>
+
+		<<set $w_hpMax = Math.max(0, $w_hpMax + Math.round($w_hpMax * $w_k))>>
+
+	<<elseif $w_hpMax lt 0>>
+
+		<<set $w_hpMax = Math.min(0, $w_hpMax + Math.round(Math.abs($w_hpMax) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_str gt 0>>
+
+		<<set $w_str = Math.max(0, $w_str + Math.round($w_str * $w_k))>>
+
+	<<elseif $w_str lt 0>>
+
+		<<set $w_str = Math.min(0, $w_str + Math.round(Math.abs($w_str) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_dex gt 0>>
+
+		<<set $w_dex = Math.max(0, $w_dex + Math.round($w_dex * $w_k))>>
+
+	<<elseif $w_dex lt 0>>
+
+		<<set $w_dex = Math.min(0, $w_dex + Math.round(Math.abs($w_dex) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_int gt 0>>
+
+		<<set $w_int = Math.max(0, $w_int + Math.round($w_int * $w_k))>>
+
+	<<elseif $w_int lt 0>>
+
+		<<set $w_int = Math.min(0, $w_int + Math.round(Math.abs($w_int) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_ddg gt 0>>
+
+		<<set $w_ddg = Math.max(0, $w_ddg + Math.round($w_ddg * $w_k))>>
+
+	<<elseif $w_ddg lt 0>>
+
+		<<set $w_ddg = Math.min(0, $w_ddg + Math.round(Math.abs($w_ddg) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_par gt 0>>
+
+		<<set $w_par = Math.max(0, $w_par + Math.round($w_par * $w_k))>>
+
+	<<elseif $w_par lt 0>>
+
+		<<set $w_par = Math.min(0, $w_par + Math.round(Math.abs($w_par) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_def gt 0>>
+
+		<<set $w_def = Math.max(0, $w_def + Math.round($w_def * $w_k))>>
+
+	<<elseif $w_def lt 0>>
+
+		<<set $w_def = Math.min(0, $w_def + Math.round(Math.abs($w_def) * $w_k))>>
+
+	<<endif>>
+
+	<<if $w_spd gt 0>>
+
+		<<set $w_spd = Math.max(0, $w_spd + Math.round($w_spd * $w_k))>>
+
+	<<elseif $w_spd lt 0>>
+
+		<<set $w_spd = Math.min(0, $w_spd + Math.round(Math.abs($w_spd) * $w_k))>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if ($w_shld) or ($setW eq -2)>>
+
+	<<set $w_att = 0>>
+
+	<<if $setW eq -1>>
+
+		<<set $w_blk = Math.max(5, $w_blk)>>
+
+	<<endif>>
+
+<<endif>>
+
+<<if (!$w_shld) or ($setW eq -2)>>
+
+	<<set $w_blk = 0>>
+
+	<<if $setW eq -1>>
+
+		<<set $w_att = Math.max(5, $w_att)>>
+
+	<<endif>>
+
+<<endif>>
+
+# Список характеристик
+
+<<set $tmp = 0>>
+
+<<if $w_att neq 0>>
+
+	<<set $tmp = 1>>
+
+	<<set $w_bonus = $w_bonus + "Атака ">>
+
+	<<if $w_att gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_att>>
+
+<<endif>>
+
+<<if $w_blk neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Блок ">>
+
+	<<if $w_blk gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_blk>>
+
+<<endif>>
+
+<<if $w_def neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Защита ">>
+
+	<<if $w_def gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_def>>
+
+<<endif>>
+
+<<if $w_hpMax neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Здоровье ">>
+
+	<<if $w_hpMax gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_hpMax>>
+
+<<endif>>
+
+<<if $w_str neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Сила ">>
+
+	<<if $w_str gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_str>>
+
+<<endif>>
+
+<<if $w_dex neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Ловкость ">>
+
+	<<if $w_dex gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_dex>>
+
+<<endif>>
+
+<<if $w_int neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Разум ">>
+
+	<<if $w_int gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_int>>
+
+<<endif>>
+
+<<if $w_spd neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Скорость ">>
+
+	<<if $w_spd gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_spd>>
+
+<<endif>>
+
+<<if $w_ddg neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Уклонение ">>
+
+	<<if $w_ddg gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_ddg>>
+
+<<endif>>
+
+<<if $w_par neq 0>>
+
+	<<if $tmp gt 0>>
+
+		<<set $w_bonus = $w_bonus + "; ">>
+
+	<<else>>
+
+		<<set $tmp = 1>>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + "Парирование ">>
+
+	<<if $w_par gt 0>>
+
+		<<set $w_bonus = $w_bonus + "+">>
+
+	<<endif>>
+
+	<<set $w_bonus = $w_bonus + $w_par>>
+
+<<endif>>
+
+<<if $w_2h>>
+
+	<<set $w_bonus = $w_bonus + "; (двуручное)">>
+
+<<endif>>
+
+:: НовоеОружие[::]48-608-4
+
+# Харки оружия
+
+<<set $w_name = "Кулак">>
+
+<<set $w_bonus = "">>
+
+<<set $w_att = 0>>
+
+<<set $w_def = 0>>
+
+<<set $w_blk = 0>>
+
+<<set $w_ddg = 0>>
+
+<<set $w_par = 0>>
+
+<<set $w_spd = 0>>
+
+<<set $w_gnd = 1>>
+
+<<set $w_hpMax = 0>>
+
+<<set $w_str = 0>>
+
+<<set $w_dex = 0>>
+
+<<set $w_int = 0>>
+
+<<set $w_2h = false>>
+
+<<set $w_shld = false>>
+
+<<set $setW = -1>>
+
+<<set $rnd = Math.round(Math.random() * Math.min(25, $level + 4)) + 1>>
+
+<<if $rnd eq 1>>
+
+	<<set $w_name = "Нож">>
+
+	<<set $w_att = 12>>
+
+	<<set $w_spd = 7>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $w_name = "Дубина">>
+
+	<<set $w_att = 21>>
+
+	<<set $w_spd = -6>>
+
+	<<set $w_gnd = 0>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $w_name = "Щиток">>
+
+	<<set $w_blk = 9>>
+
+	<<set $w_def = 4>>
+
+	<<set $w_shld = true>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $w_name = "Кастет">>
+
+	<<set $w_att = 9>>
+
+	<<set $w_spd = 5>>
+
+	<<set $w_ddg = 5>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $w_name = "Баклер">>
+
+	<<set $w_blk = 10>>
+
+	<<set $w_def = 5>>
+
+	<<set $w_shld = true>>
+
+<<elseif $rnd eq 6>>
+
+	<<set $w_name = "Копьё">>
+
+	<<set $w_att = 27>>
+
+	<<set $w_par = 5>>
+
+	<<set $w_gnd = 2>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 7>>
+
+	<<set $w_name = "Кинжал">>
+
+	<<set $w_att = 17>>
+
+	<<set $w_spd = 5>>
+
+<<elseif $rnd eq 8>>
+
+	<<set $w_name = "Серп">>
+
+	<<set $w_att = 24>>
+
+	<<set $w_par = 5>>
+
+<<elseif $rnd eq 9>>
+
+	<<set $w_name = "Тарч">>
+
+	<<set $w_blk = 16>>
+
+	<<set $w_def = 12>>
+
+	<<set $w_shld = true>>
+
+<<elseif $rnd eq 10>>
+
+	<<set $w_name = "Двузубец">>
+
+	<<set $w_att = 31>>
+
+	<<set $w_par = 10>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 11>>
+
+	<<set $w_name = "Топор">>
+
+	<<set $w_att = 29>>
+
+<<elseif $rnd eq 12>>
+
+	<<set $w_name = "Щит">>
+
+	<<set $w_blk = 20>>
+
+	<<set $w_def = 11>>
+
+	<<set $w_shld = true>>
+
+<<elseif $rnd eq 13>>
+
+	<<set $w_name = "Палаш">>
+
+	<<set $w_att = 38>>
+
+	<<set $w_spd = -5>>
+
+<<elseif $rnd eq 14>>
+
+	<<set $w_name = "Молот">>
+
+	<<set $w_att = 65>>
+
+	<<set $w_spd = -9>>
+
+	<<set $w_par = -9>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 15>>
+
+	<<set $w_name = "Кистень">>
+
+	<<set $w_att = 37>>
+
+	<<set $w_spd = 15>>
+
+	<<set $w_par = -6>>
+
+<<elseif $rnd eq 16>>
+
+	<<set $w_name = "Секира">>
+
+	<<set $w_att = 51>>
+
+	<<set $w_spd = -7>>
+
+	<<set $w_gnd = 0>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 17>>
+
+	<<set $w_name = "Шпага">>
+
+	<<set $w_att = 36>>
+
+	<<set $w_spd = 15>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 18>>
+
+	<<set $w_name = "Трезубец">>
+
+	<<set $w_att = 49>>
+
+	<<set $w_par = 15>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 19>>
+
+	<<set $w_name = "Гладиус">>
+
+	<<set $w_att = 45>>
+
+	<<set $w_spd = 9>>
+
+<<elseif $rnd eq 20>>
+
+	<<set $w_name = "Скутум">>
+
+	<<set $w_blk = 30>>
+
+	<<set $w_def = 15>>
+
+	<<set $w_spd = -3>>
+
+	<<set $w_shld = true>>
+
+<<elseif $rnd eq 21>>
+
+	<<set $w_name = "Булава">>
+
+	<<set $w_att = 40>>
+
+	<<set $w_spd = -5>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 22>>
+
+	<<set $w_name = "Меч">>
+
+	<<set $w_att = 50>>
+
+<<elseif $rnd eq 23>>
+
+	<<set $w_name = "Алебарда">>
+
+	<<set $w_att = 60>>
+
+	<<set $w_gnd = 0>>
+
+	<<set $w_2h = true>>
+
+<<elseif $rnd eq 24>>
+
+	<<set $w_name = "Павеза">>
+
+	<<set $w_blk = 35>>
+
+	<<set $w_def = 19>>
+
+	<<set $w_shld = true>>
+
+	<<set $w_gnd = 0>>
+
+<<elseif $rnd eq 25>>
+
+	<<set $w_name = "Ятаган">>
+
+	<<set $w_spd = 56>>
+
+	<<set $w_att = 24>>
+
+<<elseif $rnd eq 26>>
+
+	<<set $w_name = "Клеймор">>
+
+	<<set $w_att = 65>>
+
+	<<set $w_par = 15>>
+
+	<<set $w_2h = true>>
+
+<<endif>>
+
+<<set $w_har = "">>
+
+<<set $w_end = "ый">>
+
+<<set $rnd = Math.round(Math.random() * Math.min(13, $level + 2)) + 1>>
+
+<<if $rnd eq 1>>
+
+	<<set $w_har = "Деревянн">>
+
+	<<set $w_spd = $w_spd + 5>>
+
+<<elseif $rnd eq 2>>
+
+	<<set $w_har = "Кремнев">>
+
+	<<set $w_att = Math.round($w_att * 1.2)>>
+
+	<<set $w_blk = $w_blk + 2>>
+
+	<<set $w_spd = $w_spd - 3>>
+
+<<elseif $rnd eq 3>>
+
+	<<set $w_har = "Резинов">>
+
+	<<set $w_att = 7 + Math.round($w_att * 1.3)>>
+
+	<<set $w_spd = $w_spd + 7>>
+
+	<<set $w_blk = $w_blk + 4>>
+
+<<elseif $rnd eq 4>>
+
+	<<set $w_har = "Медн">>
+
+	<<set $w_att = 12 + Math.round($w_att * 1.4)>>
+
+	<<set $w_blk = $w_blk + 6>>
+
+	<<set $w_def = Math.round($w_def * 1.05)>>
+
+<<elseif $rnd eq 5>>
+
+	<<set $w_har = "Бронзов">>
+
+	<<set $w_att = 18 + Math.round($w_att * 1.5)>>
+
+	<<set $w_blk = $w_blk + 8>>
+
+	<<set $w_def = Math.round($w_def * 1.06)>>
+
+<<elseif $rnd eq 6>>
+
+	<<set $w_har = "Железн">>
+
+	<<set $w_att = 25 + Math.round($w_att * 1.6)>>
+
+	<<set $w_blk = $w_blk + 10>>
+
+	<<set $w_def = Math.round($w_def * 1.07)>>
+
+<<elseif $rnd eq 7>>
+
+	<<set $w_har = "Стальн">>
+
+	<<set $w_end = "ой">>
+
+	<<set $w_att = 30 + Math.round($w_att * 1.7)>>
+
+	<<set $w_blk = $w_blk + 12>>
+
+	<<set $w_def = Math.round($w_def * 1.1)>>
+
+<<elseif $rnd eq 8>>
+
+	<<set $w_har = "Серебрян">>
+
+	<<set $w_att = 35 + Math.round($w_att * 1.8)>>
+
+	<<set $w_spd = $w_spd + 15>>
+
+	<<set $w_blk = $w_blk + 14>>
+
+	<<set $w_def = Math.round($w_def * 1.09)>>
+
+<<elseif $rnd eq 9>>
+
+	<<set $w_har = "Нефритов">>
+
+	<<set $w_att = 40 + Math.round($w_att * 1.9)>>
+
+	<<set $w_blk = $w_blk + 16>>
+
+	<<set $w_def = Math.round($w_def * 1.11)>>
+
+<<elseif $rnd eq 10>>
+
+	<<set $w_har = "Обсидианов">>
+
+	<<set $w_att = 50 + Math.round($w_att * 2.1)>>
+
+	<<set $w_blk = $w_blk + 18>>
+
+	<<set $w_def = Math.round($w_def * 1.12)>>
+
+<<elseif $rnd eq 11>>
+
+	<<set $w_har = "Золот">>
+
+	<<set $w_end = "ой">>
+
+	<<set $w_att = 60 + Math.round($w_att * 2.2)>>
+
+	<<set $w_blk = $w_blk + 20>>
+
+	<<set $w_def = Math.round($w_def * 1.12)>>
+
+	<<set $w_hpMax = 20>>
+
+<<elseif $rnd eq 12>>
+
+	<<set $w_har = "Титанов">>
+
+	<<set $w_att = 70 + Math.round($w_att * 2.5)>>
+
+	<<set $w_blk = $w_blk + 25>>
+
+	<<set $w_str = 1>>
+
+	<<set $w_def = Math.round($w_def * 1.15)>>
+
+<<elseif $rnd eq 13>>
+
+	<<set $w_har = "Мифрилов">>
+
+	<<set $w_att = 85 + Math.round($w_att * 2.7)>>
+
+	<<set $w_blk = $w_blk + 30>>
+
+	<<set $w_dex = 1>>
+
+	<<set $w_def = Math.round($w_def * 1.17)>>
+
+<<elseif $rnd eq 14>>
+
+	<<set $w_har = "Алмазн">>
+
+	<<set $w_att = 90 + Math.round($w_att * 2.9)>>
+
+	<<set $w_blk = $w_blk + 35>>
+
+	<<set $w_int = 1>>
+
+	<<set $w_def = Math.round($w_def * 1.2)>>
+
+<<endif>>
+
+<<if $w_gnd eq 0>>
+
+	<<set $w_har = $w_har + "ая">>
+
+<<elseif $w_gnd eq 1>>
+
+	<<set $w_har = $w_har + $w_end>>
+
+<<elseif $w_gnd eq 2>>
+
+	<<set $w_har = $w_har + "ое">>
+
+<<endif>>
+
+<<if $w_har.length gt 2>>
+
+	<<set $w_name = $w_har + " " + $w_name.toLowerCase()>>
+
+<<endif>>
+
+<<display 'ДопХарактеристики'>>
+
+<<set $inv.push($w_name)>>
+
+<<set $invHar.push($w_bonus)>>
+
+:: Начало[::]104-152-3
+
+# Имя героя
+
+<<set $name = "Неведомый">>
+
+<<set $champ = false>>
+
+# Слава героя
+
+<<set $glory = 0>>
+
+# Здоровье героя
+
+<<set $base_hpMax = 150>>
+
+# Сила героя
+
+<<set $base_str = 5>>
+
+# Ловкость героя
+
+<<set $base_dex = 5>>
+
+# Удача героя
+
+<<set $base_int = 5>>
+
+# Инвентарь
+
+<<set $inv = ["Кулак", "Треснувший деревянный меч ученика", "Тренировочный деревянный щит"]>>
+
+<<set $invHar = ["—", "Атака +9", "Блок +8; Защита +6"]>>
+
+<<set $invA = ["Сублигакулум"]>>
+
+<<set $invAHar = ["—"]>>
+
+# Номер оружия доспехов в инвентаре
+
+<<set $wr = 0>>
+
+<<set $wl = 0>>
+
+<<set $ar = 0>>
+
+# Инициализация бонусов оружия
+
+<<display 'СбросПравой'>>
+
+<<display 'СбросЛевой'>>
+
+<<display 'СбросБрони'>>
+
+# Состояние щита
+
+<<set $shieldState = 0>>
+
+# Уровень героя
+
+<<set $level = 1>>
+
+<<display 'ДобавитьБонусы'>>
+
+<<set $hp = $hpMax>>
+
+# Опыт героя
+
+<<set $exp = 0>>
+
+<<display 'ОпределитьОпыт'>>
+
+# Потенциал (очки умений)
+
+<<set $s_points = 0>>
+
+<<set $sp = 5>>
+
+<<set $spMax = $sp>>
+
+# Нижний порог характеристик
+
+<<set $sp_str = $base_str>>
+
+<<set $sp_dex = $base_dex>>
+
+<<set $sp_int = $base_int>>
+
+<<set $sp_hpMax = $base_hpMax>>
+
+# Номер вкладки в оружейной
+
+<<set $tab = 0>>
+
+<<set $pageW = 0>>
+
+<<set $pageA = 0>>
+
+# Размер полосы здоровья и опыта
+
+<<set $pr_size = 20>>
+
+# Номер вводной информации
+
+<<set $info = 0>>
+
+# Уровень сложности битвы
+
+<<set $diff = 0>>
+
+# Предыдущий враг
+
+<<set $e_last = 0>>
+
+# Награда за победу
+
+<<set $drop = "">>
+
+<<display 'НоваяБроня'>>
+
+# Число ходов
+
+<<set $turn = 0>>
+
+# Навыки
+
+<<set $s_k = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]>>
+
+<<set $s_time = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]>>
+
+<<set $s_timeMax = [2, 4, 3, 4, 5, 4, 3, 4, 3, 5, 6]>>
+
+# Статистика
+
+<<set $victory = 0>>
+
+<<set $defeat = 0>>
+
+<<set $d_turns = 0>>
+
+<<set $v_turns = 0>>
+
+<<set $d_enemy = "">>
+
+<<set $v_enemy = "">>
+
+<<set $gloryTotal = 0>>
+
+# Чемпионы
+
+<<display 'ПридуматьИмя'>>
+
+<<set $champName = $text1>>
+
+<<set $champFight = 0>>
+
+# Бестиарий
+
+<<set $enemyInfo = false>>
+
+:: ПараметрыОружия[::]1112-160-4
+
+<<set $w_name = "Кулак">>
+
+<<set $w_att = 0>>
+
+<<set $w_def = 0>>
+
+<<set $w_blk = 0>>
+
+<<set $w_ddg = 0>>
+
+<<set $w_par = 0>>
+
+<<set $w_spd = 0>>
+
+<<set $w_gnd = 1>>
+
+<<set $w_hpMax = 0>>
+
+<<set $w_str = 0>>
+
+<<set $w_dex = 0>>
+
+<<set $w_int = 0>>
+
+<<set $w_2h = false>>
+
+<<set $w_shld = false>>
+
+<<set $tmp = $weapon.split("; ")>>
+
+<<set $j = 0>>
+
+<<loop $tmp.length>>
+
+	#_<<print $tmp[$j]>>_
+
+	<<if $tmp[$j].indexOf("дву") gt -1>>
+
+		<<set $w_2h = true>>
+
+	<<elseif $tmp[$j].indexOf("Ата") gt -1>>
+
+		<<set $w_att = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Бло") gt -1>>
+
+		<<set $w_blk = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Защ") gt -1>>
+
+		<<set $w_def = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Здо") gt -1>>
+
+		<<set $w_hpMax = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Сил") gt -1>>
+
+		<<set $w_str = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Лов") gt -1>>
+
+		<<set $w_dex = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Раз") gt -1>>
+
+		<<set $w_int = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Укл") gt -1>>
+
+		<<set $w_ddg = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Пар") gt -1>>
+
+		<<set $w_par = $tmp[$j].split(" ")[1] * 1>>
+
+	<<elseif $tmp[$j].indexOf("Ско") gt -1>>
+
+		<<set $w_spd = $tmp[$j].split(" ")[1] * 1>>
+
+	<<endif>>
+
+	<<set $j++>>
+
+<<endloop>>
+
+:: Start[::]8-8-3
+
+<<clrscr>>
+
+<<fade = 400>>
+
+<<set $level = 0>>
+
+[[File: files/morych.png]]
+
+[[File: files/arena.png]]
+
+===''[[И г р а т ь|ЛистПерсонажа]]''===
+
+===''[[Информация|ОтАвтора]]''===
+
+===''[[Благодарности|Благодарности]]''===
+
+:: ОтАвтора[::]8-320-5
+
+===''Информация''===
+
+----
+
+''Дорогие друзья!'' Эта игра -- лишь первый шаг на пути создания текстовой RPG. Наибольшее внимание здесь уделено боевой системе, монстрам, снаряжению и развитию персонажа. А вот сюжет, квесты, диалоги с неигровыми персонажами и глубокий смысл всего происходящего тут найти куда сложнее (оставим их для других проектов).
+
+''Как тут играть?'' В начале игры у вашего персонажа будет несколько очков потенциала, которые вы можете распределить по базовым характеристикам. Чтобы изменить имя персонажа, нажмите ссылку «...» рядом с именем. Ссылка «(?)» покажет страницу статистики персонажа. Загляните в оружейную, чтобы выбрать оружие и броню. Оружие можно брать в любую руку, но учтите, что ваш персонаж правша. Разобравшись со снаряжением, отправляйтесь на Арену. За победы на Арене персонаж будет получать славу, опыт, а иногда и новое снаряжение. Ненужное снаряжение можно сдавать кладовщику, получая при этом славу. Как только персонаж достигнет нового уровня, он получит два очка потенциала для базовых характеристик, а также одно очко потенциала для тренировки приёмов. Начиная с девятого уровня при наличии достаточного количества славы можно сразиться за титул Чемпиона Арены. Став Чемпионом, время от времени придётся защищать свой титул от претендентов. Войдите в историю, как лучший боец Арены!
+
+Автор с большим интересом выслушает ваши отзывы, замечания и предложения относительно игры и её возможного дальнейшего развития. Сообщения принимаются, например, на почту ''elmorych@gmail.com'', в ''[[комментариях|http://hyperbook.ru/comments.php?id=13764029087384#last]]'' или на ''[[форуме|http://forum.ifiction.ru/viewtopic.php?id=1941]]''.
+
+Чтобы использовать боевую систему Арены в своей игре или просто поэкспериментировать с игрой, скачайте исходный проект для AXMA Story Maker:<<br>>===''[[Arena.zip|https://docs.google.com/file/d/0B2cuMrQeuO2kb1lzMFdjM3I4dWs/edit]]'' (первая бета-версия)===
+
+----
+
+===''[[Назад|Start]]''===
+
+:: Благодарности[::]8-456-5
+
+===''Благодарности''===
+
+----
+
+===''//Автор игры и Распорядитель Арены<<br>>выражают искреннюю благодарность<<br>>всем этим людям://''===
+
+===''Bcute''<<br>>//фотограф и дизайнер//<<br>>за моральную поддержку<<br>>и помощь с противниками===
+
+===''КотЪ''<<br>>//поэт и композитор,<<br>>эксперт в области компьютерных игр//<<br>>за многочисленные ценные советы<<br>>и помощь со снаряжением===
+
+===''DoubleDragon''<<br>>//создатель «AXMA Story Maker»,<<br>>главный редактор издательства «Гиперкнига»//<<br>>за тестирование, баг-репорты, новые фичи<<br>>и про-версию редактора===
+
+===''Слава''<<br>>//один из лучших бойцов Арены//<<br>>за преданность делу Арены===
+
+===''WeLLWar''<<br>>//начинающий автор//<<br>>за поставленную задачу===
+
+===''sosiskin''<<br>>//переводчик, музыкант и литератор//<<br>>за поддержку поставленной задачи===
+
+===''Вета''<<br>>//успешный автор, сценарист, кулинар//<<br>>за верные вопросы и ценные замечания===
+
+===''Ergistal''<<br>>//известный автор, эксперт<<br>>в области средневекового вооружения//<<br>>за ценные советы, консультации<<br>>и помощь в реализации щитов===
+
+===''Ajenta''<<br>>//известнейший автор,<<br>>программист, разработчик RPG//<<br>>за справедливую критику, полезные советы<<br>>и разработку RPG===
+
+===''Kerber''<<br>>//водитель воздушного шара, хозяин Арчибальда//<<br>>за отличную идею с генераторами названий===
+
+===''Moredhel''<<br>>//профессиональный тестировщик,<<br>>поэт, писатель, примоген Камарильи//<<br>>за тестирование, полезные советы и замечания===
+
+===''Fahrengeit''<<br>>//талантливый автор, программист//<<br>>за ценные советы, замечания<<br>>и помощь с интерфейсом===
+
+===''Komuccarov''<<br>>//опытный боец Арены//<<br>>за тестирование и баг-репорты===
+
+===''Нафанин''<<br>>//адепт прокрастинации,<<br>>генеральный спонсор КРИЛ//<<br>>за веру в текстовые игры и мотивирование авторов===
+
+===''//А также спасибо всем бойцам Арены<<br>>и всем, кто зашёл на страницу благодарностей!//''===
+
+----
+
+===''[[Назад|Start]]''===
+
+:: StoryStyle[::]2480-4880-6
+
+*, #body {
+
+
+
+ -webkit-text-size-adjust:none; -webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-focus-ring-color:rgba(0,0,0,0); outline:none; -webkit-touch-callout:none; -moz-user-select:none; -o-user-select:none; -khtml-user-select:none; -webkit-user-select:none; -ms-user-select:none; user-select:none; -webkit-user-drag:none; user-drag:none;
+
+
+
+}
+
+
+
+html, #body {margin:0; height:100%; overflow:hidden;}
+
+
+
+#body, input {font-size:95%;}
+
+
+
+#body, .input_text, .input_butt {font-family:Tahoma, Geneva, 'Droid Sans', sans-serif;}
+
+
+
+.input_text, .input_butt, #printCont, #printAdd, #printImage, .wind, .button, .buttonno, .buttonback, .dialogButton {background-color:#FFFFFF; color:#555555;}
+
+
+
+#body {
+
+
+
+ background-image:url(;);
+
+
+
+ background-repeat:repeat;
+
+
+
+ background-color:#DDDDDD;
+
+
+
+ cursor:default; word-wrap:break-word;
+
+
+
+}
+
+
+
+#toolbar, #toolbar *, #menu, #menu *, h1 {background-color:#555555; color:#FFFFFF;}
+
+
+
+#toolbar {height:36px; position:absolute; top:0; left:0; width:100%; padding:6px 0; overflow:hidden; z-index:100;}
+
+
+
+#toolbar, #menu {opacity:0.85;}
+
+
+
+#page, #printCont, #printImage, #printAddCont, #printAdd, #printAddText, #console, #toolbar, .wind, #menu, .button, .buttonno, .buttonback, .input_text {-moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box;}
+
+
+
+#page {display:none; height:100%; max-height:100%; width:100%; max-width:600px; text-align:left; padding:0; margin:0 auto;}
+
+
+
+#printTitle {display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:100%;}
+
+
+
+#printCont, #printImage, #menu, #toolbar {box-shadow:2px 2px 5px #888888;}
+
+
+
+#printCont {position:absolute; top:36px; bottom:36px; left:0; right:0; padding:10px; overflow:auto; -webkit-overflow-scrolling:touch;}
+
+
+
+#printImage {display:none; position:absolute; top:36px; bottom:36px; left:0; right:0;}
+
+
+
+#print, #printAdd, #menu {line-height:1.4em;}
+
+
+
+#print {margin:0 auto; max-width:600px;}
+
+
+
+#menu {height:36px; max-height:36px; margin:0; padding:3px 3px 3px 20px; font-size:12px; overflow:auto; -webkit-overflow-scrolling:touch; position:absolute; left:0; right:0; bottom:0; text-align:center; z-index:98; line-height:1.1em;}
+
+
+
+#menuTable {height:100%;}
+
+
+
+#menu span {background-color:inherit; font-size:1em; border:none; border-radius:0; padding:0; display:inline-block; margin:0 4px 0 0; max-width:100px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+
+
+#menu img {display:inline; max-height:20px; vertical-align:middle;}
+
+
+
+#printAddCont {display:none; padding:56px 20px 20px 20px; position:absolute; left:0; bottom:0; top:0; right:0;}
+
+
+
+#printAdd {width:100%; max-width:668px; margin:0 auto; padding:10px; max-height:100%; overflow:auto; -webkit-overflow-scrolling:touch; box-shadow:2px 2px 5px #888888;}
+
+
+
+#printAddText {text-align:left;}
+
+
+
+.wind {display:none; position:absolute; width:240px; margin-top:-110px; margin-left:-120px; height:auto; max-height:220px; left:50%; top:50%; z-index:101; padding:12px; text-align:center; overflow:auto; -webkit-overflow-scrolling:touch; font-size:15px; box-shadow:2px 2px 5px #888888; line-height:1.6em;}
+
+
+
+.plink, .plinkno, a:link, a:visited, .wind .plink, .wind .plinkno, .wind a:active, .wind a:link, .wind a:visited {color:#d00000; text-decoration:none; -webkit-tap-highlight-color:rgba(128,128,128,0.2);}
+
+
+
+.button, .buttonno, .buttonback, .dialogButton {display:table; font-size:0.95em; border-width:2px; border-style:solid; border-color:#d00000; padding:3px 8px; margin:0 4px 2px 0; max-width:100%; word-break:break-all; border-radius:6px; -webkit-tap-highlight-color:rgba(128,128,128,0.2);}
+
+
+
+.dialogButton {display:inline-block; padding:2px 0px; margin:0; min-width:30px; width:44%;}
+
+
+
+.plinkno, .buttonno {opacity:0.6;}
+
+
+
+a:hover, a:active, .plink:hover, .plink:active, #menu span:hover, #menu span:active, .button:hover, .button:active, .buttonback:hover, .buttonback:active, .dialogButton:hover, .dialogButton:active, #showImageButton:hover {opacity:0.8;}
+
+
+
+.author {text-align:center; letter-spacing:0.12em;}
+
+
+
+tt, #console {font-family:Menlo, Monaco, 'Droid Sans Mono', 'Courier New', Courier, 'Lucida Console', monospace;}
+
+
+
+.input_text {-webkit-appearance:none; margin:0; padding:4px; width:90%; border-width:0;}
+
+
+
+.input_text, #console, tt {-moz-user-select:text; -o-user-select:text; -khtml-user-select:text; -webkit-user-select:text; -ms-user-select:text; user-select:text;}
+
+
+
+.input_butt {-webkit-appearance:none; margin:0; text-align:right; width:10%; padding:4px; border:none;}
+
+
+
+.myinput, .trow {border-width:2px; border-style:solid; border-color:#555555;}
+
+
+
+.myinput {padding:2px;}
+
+
+
+.trow, .trow_nb {word-wrap:break-word; table-layout:fixed; margin-bottom:4px;}
+
+
+
+.trow_nb {border:none;}
+
+
+
+.rcol {border-left-width:2px; border-left-style:solid; border-left-color:#555555;}
+
+
+
+.hr {color:#555555; background-color:#555555; width:100%; border:none; height:2px;}
+
+
+
+.h1 {font-size:1.3em; text-align:center; padding:12px; display:block;}
+
+
+
+h6 {font-size:1.4em; text-align:center; margin:0;}
+
+
+
+.header {color:#666666; font-size:1.3em; text-align:center; padding:8px; display:block;}
+
+
+
+img {max-width:100%; max-height:100%; border:none; margin:0; padding:0;}
+
+
+
+.file {max-width:100%; display:block; margin:0.2em auto;}
+
+
+
+.video {position:relative; padding-bottom:56.25%; padding-top:30px; height:0; overflow:hidden;}
+
+
+
+.video iframe, .video object, .video embed {position:absolute; top:0; left:0; width:100%; height:100%;}
+
+
+
+.player {opacity:0.4; width:100%; z-index:9;}
+
+
+
+li {margin-left:0px; list-style-type:circle;}
+
+
+
+#console {position:absolute; top:0; right:0; left:0; z-index:99; opacity:0.85; padding:0; color:#000000; background-color:#FFFFFF; height:0; overflow:hidden; -webkit-overflow-scrolling:touch; font-size:12px; -webkit-transition:height 0.5s ease; -moz-transition:height 0.5s ease; -ms-transition:height 0.5s ease; -o-transition:height 0.5s ease; transition:height 0.5s ease;}
+
+
+
+{}::-webkit-scrollbar
+
+
+
+{
+
+
+
+	width:6px;
+
+
+
+	height:6px;
+
+
+
+}
+
+
+
+{}::-webkit-scrollbar-corner
+
+
+
+{
+
+
+
+	background:transparent;
+
+
+
+}
+
+
+
+{}::-webkit-scrollbar-track
+
+
+
+{
+
+
+
+	background:transparent;
+
+
+
+}
+
+
+
+{}::-webkit-scrollbar-thumb, .scrollbar
+
+
+
+{
+
+
+
+	background-color:#555555; border-radius:6px; opacity:0.7;
+
+
+
+}
+
+
+
+{}::-webkit-scrollbar-thumb:hover
+
+
+
+{
+
+
+
+	opacity:0.6;
+
+
+
+}
+
+
+
+.imgbutton {display:inline-block; width:24px; height:24px;}
+
+
+
+.imgbutton:hover {opacity:0.8;}
+
+
+
+#showImageButton {position:absolute; background:#FF0000; bottom:0; left:0; width:20px; height:36px; font-size:20px; overflow:hidden; text-align:center; z-index:100; background: no-repeat center center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASBAMAAACk4JNkAAAAMFBMVEUAAAD////F5P9/wkbW7P9nvEgSiUa02//95ASr1/+Zy/mHvvB1seg9tEz90QTf8f96IAwnAAAAAXRSTlMAQObYZgAAAF1JREFUCNdjwAoEwUAAyJLoeHPmzBkI6/Xu3bshrFerVq0CseTeWc6cORPEEi9XKi8vB7GElEAAxBJxAQEQSyzt/7e0/yCW7N203LtpIJZoKAiAWMLGICCAZC9+AAD1sR3QeboaSAAAAABJRU5ErkJggg==);}
+
+
+
+#audioButton {background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEJGlDQ1BJQ0MgUHJvZmlsZQAAOBGFVd9v21QUPolvUqQWPyBYR4eKxa9VU1u5GxqtxgZJk6XtShal6dgqJOQ6N4mpGwfb6baqT3uBNwb8AUDZAw9IPCENBmJ72fbAtElThyqqSUh76MQPISbtBVXhu3ZiJ1PEXPX6yznfOec7517bRD1fabWaGVWIlquunc8klZOnFpSeTYrSs9RLA9Sr6U4tkcvNEi7BFffO6+EdigjL7ZHu/k72I796i9zRiSJPwG4VHX0Z+AxRzNRrtksUvwf7+Gm3BtzzHPDTNgQCqwKXfZwSeNHHJz1OIT8JjtAq6xWtCLwGPLzYZi+3YV8DGMiT4VVuG7oiZpGzrZJhcs/hL49xtzH/Dy6bdfTsXYNY+5yluWO4D4neK/ZUvok/17X0HPBLsF+vuUlhfwX4j/rSfAJ4H1H0qZJ9dN7nR19frRTeBt4Fe9FwpwtN+2p1MXscGLHR9SXrmMgjONd1ZxKzpBeA71b4tNhj6JGoyFNp4GHgwUp9qplfmnFW5oTdy7NamcwCI49kv6fN5IAHgD+0rbyoBc3SOjczohbyS1drbq6pQdqumllRC/0ymTtej8gpbbuVwpQfyw66dqEZyxZKxtHpJn+tZnpnEdrYBbueF9qQn93S7HQGGHnYP7w6L+YGHNtd1FJitqPAR+hERCNOFi1i1alKO6RQnjKUxL1GNjwlMsiEhcPLYTEiT9ISbN15OY/jx4SMshe9LaJRpTvHr3C/ybFYP1PZAfwfYrPsMBtnE6SwN9ib7AhLwTrBDgUKcm06FSrTfSj187xPdVQWOk5Q8vxAfSiIUc7Z7xr6zY/+hpqwSyv0I0/QMTRb7RMgBxNodTfSPqdraz/sDjzKBrv4zu2+a2t0/HHzjd2Lbcc2sG7GtsL42K+xLfxtUgI7YHqKlqHK8HbCCXgjHT1cAdMlDetv4FnQ2lLasaOl6vmB0CMmwT/IPszSueHQqv6i/qluqF+oF9TfO2qEGTumJH0qfSv9KH0nfS/9TIp0Wboi/SRdlb6RLgU5u++9nyXYe69fYRPdil1o1WufNSdTTsp75BfllPy8/LI8G7AUuV8ek6fkvfDsCfbNDP0dvRh0CrNqTbV7LfEEGDQPJQadBtfGVMWEq3QWWdufk6ZSNsjG2PQjp3ZcnOWWing6noonSInvi0/Ex+IzAreevPhe+CawpgP1/pMTMDo64G0sTCXIM+KdOnFWRfQKdJvQzV1+Bt8OokmrdtY2yhVX2a+qrykJfMq4Ml3VR4cVzTQVz+UoNne4vcKLoyS+gyKO6EHe+75Fdt0Mbe5bRIf/wjvrVmhbqBN97RD1vxrahvBOfOYzoosH9bq94uejSOQGkVM6sN/7HelL4t10t9F4gPdVzydEOx83Gv+uNxo7XyL/FtFl8z9ZAHF4bBsrEwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAjBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+QWNvcm4gdmVyc2lvbiAzLjUuMTwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpDb21wcmVzc2lvbj41PC90aWZmOkNvbXByZXNzaW9uPgogICAgICAgICA8dGlmZjpZUmVzb2x1dGlvbj43MjwvdGlmZjpZUmVzb2x1dGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+NzI8L3RpZmY6WFJlc29sdXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgoHbBTiAAAD+klEQVRIDe1VS0iUURS+88/8M+moo/laKETS+ISZzFBmUSi2CVoEWkEUZJRYoKtqVSAErQMr0AJXUlnrCJ1BWkQYjhKGj1FklHy/8DGj8+77Ls3fMCjUqk0XLvfec8493znfOf/9hThgxGIx3QHi/6LDGQBlDk5a9Pb26hNXyC2H3/wDDRxUzs/P+1dWVm7SvLOzU4VM1girYXFx8c3S0hK2sTuYackuDcmCxDMu2CYnJ51paWkpoVBoPa7T6XQK9hFM+87OzhXoRDQafZGRkbGFO6+hj9EWe2nIvTZaW1tNPEBpHxsbcwWDwaNra2s8Gyl3Op2Mns4FHLmtVusVbPeRiZienn6BvRW2RzBVAmntCIECQZQXfT5fJZz3K4qSjQhDmZmZKqK7XFRU9I56gN7a3Nwsyc/Pv88zKLy7sLDwPDU1laCvysvLb1POwVTj4xjoqB4fH78wMjLyASlnw0mAkZACTGm7vLzcMDw8/BLrPQTxmJcLCgoYuWt/f19sbGxcxJ0TmOb29naDVgMYP/L7/U3b29sScGtrK4JojJhCVVWBs5QjGwMy8MHOjNo8RBDOrKysTxaLpQdU1iOwnKmpqTPFxcXdBNEygAM7ndMxgGAX1e/t7TFyOUGR5N1kMr0tKSm5BpAYdaDnKpGx/wpqfaBVwE8FZW1tbWENADoLHLMbYoFAQMEUkUiEfAvu0aa8I0deXl4/+J7iYXZ2NpsrePch0yBp8nq9srYdHR1hjaJwOCwjolOA8I6ATOj1epkB5QlDBahKHWy0RmHGvAtqpAw10CUCrAP9BLPExSi4V+JARqNRpKena448Hk8jaDhOAGTjJTCa4yhkqaxXbm5uiDIA/O4iFOwLjAVWBREooCsSr8EvmiSdbre7CfMli767u7uH4nbTGQp8FgGZ0NbCYDC4KWtubv79odXW1j6pr693NDY2noFuCEB6pB8kNSwmQTiwepCpPycnR5SVlbXb7fbvCMi4urp6nfzD9gdkA7Tt6uqKahSBklXIOAW+h/MDAwMs5EmkHULaKqKShXE4HJ/R0pfR79aampqntO/r63uA7+IUbITZbO4BnfTDRzGi8UrDxDE4OJg9NDTUjywqKS8sLLzU0NDwHls+JQHKOFwu143R0VF+aCloYW9LS8tpBMt3SwKQ7wNBEN06aDsHw2+Iip0Rxp6Fi4BblXvUoXpubq4bHZWCRojV1dXdoXPYkBnZdnx/5MvHC8mjoqJiw2aznUOxPXAi+x1vjg5PtgRDgb8C/Bk+wvWqqqrzpaWlH+FDDwCpT/Z36HlmZubYxMSE7ZdB/OOUKzIzYOYl6Q719beKOBjvyT/d3zqI29PRgbWKG/yz9SeZ3Vq33XJs5AAAAABJRU5ErkJggg==);}
+
+
+
+#BackButton {background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAL2SURBVHjatJVNSFRRFMf/R2fMbCQ/Fk4SumgS04WEBqa5kTDUBDeGQRsXKaIuisAWFrkK27SohYEQfpBCUJISRFZGSDgySKA5CaOJhmk2mKPj+Lze02I+fO/NvCkoLzzePfed9//dc+659xIz4yBbzJ8cOogOHwiAiGg6J+d2IdD83wF9RGZncXFnSm3tHQlY/gVg0g88JbIUVlY+SSgoqGIhYAGS+4hO6P08gM8E/KwHdjjKQpL62xBRWm5NzWB8dnYhpAQLAZYSCDwhWwgAYOF2u7fs9vdfFhY6XwPvHjELQ8AI0UlbXd1wXHp6VpiwChC0g/2AzZ6RkefjKytNV5m/hwHGic4ca2x8EZuUZA0JqiBq4YjfA+/tqalPb2dmLrYwL2kWeQ6Ik15vDAvhFwu8WQiwouz3DcaC/odstryS5OSuNqIEDeAy89ir7u4Kn9PpYkWBDAroxRVFMwYdGFLCUlRUlgtcCivTBmbH4NDQhS273QHVD6F0RBHWrIcQlJOaWh+MgvQVdp8o7XxmZk9iaWkZhMBcb+/jz0DPLhByZICsQNbp/PxbZqv1OKT0jwcg0uv1DY2N5d1gng3bB9eYVx4Q1ZwbGHiYVF19xQcsNjOPRijx0V6ixbPl5S/1i00mU3wCYAMQDgCAFuaNDqKGkv7+5T1g12gTbQJ2TUkDIVAckBhxJwdbK/N2H1HbD+CokU8OUMVChIRVaeJtYMMQ8IGoAkBaJoBMvw1gPxQJUIrZfMpaUtKkEQ6AhNvt8QDzEQFERNN5ee1xGRkFUIWuz7M6HZq+lPg1M+OIBZaMUyQEaY4JYL8UowgDACvKrgPoamXeNASEzhq9gC4aTd9vs2ty8hmAYcPjWj3biMIRZh0UX56YeDML3LzOvBEVgEgRGAizlNhbX/c4Xa4eF3C3lflb1AsHAMTq6gqZTKuqs18DAQDp8ylibW15nvnjV6B/FZi8x7wT9cIJtnaipNg/XJWKv2q9RwBvK/PeX91oB9F+DwB6mJNiY4h0MgAAAABJRU5ErkJggg==);}
+
+
+
+#ConsoleButton {background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAACbGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS4xLjIiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iPgogICAgICAgICA8eG1wOkNyZWF0b3JUb29sPkFjb3JuIHZlcnNpb24gMy4zPC94bXA6Q3JlYXRvclRvb2w+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOkNvbXByZXNzaW9uPjU8L3RpZmY6Q29tcHJlc3Npb24+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0aW9uPjcyPC90aWZmOllSZXNvbHV0aW9uPgogICAgICAgICA8dGlmZjpYUmVzb2x1dGlvbj43MjwvdGlmZjpYUmVzb2x1dGlvbj4KICAgICAgPC9yZGY6RGVzY3JpcHRpb24+CiAgIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+CpnklSUAAAMuSURBVEgNtVVNS1tBFJ2XRE2FIC4UaZu4cmXsP+jHTqErlQZK6Uroql10Y7ooSnFl21W76koqcSO4tN100RSxBUWpgk0s1ggpDU1EQtSYrzc9Z3wvhPfGxE0HbmZy58459575eIaUUvzP5msFHolEroRCobuBQOCW1+u9Zppm6eTk5Ec2m10+Pj7+vri4WGuGYTSrYHJy8j7AX/n9/qvGeUO4VGvQm5lM5mMikXi6sLDw8yISLQGxpqamXgSDwecej0fQ4FJGICaFSpShmszm5ubY3NzcNx2JliAajT4cGBh4D0kMgqOXJMW4XgEIZK1WM2Ain8+nNjY2bsZisbSTxON0TExMBCgLwBS4z+cTtLa2trrZPhCTXHR1dfX39fU9w355nXgugu7u7jFo3stsmTmNgO3t7RImOjo62NOvKmMc5YOc9wDe4yRwnSKcljuW3rY8zFzCDJKhGZVKhfsgIZOKQbzs7OzsAfENEGQaSVwECLrOAJLYPbNFVaxCVKtVJQu1txKxewMxIbWo4cclEbKqWvMsnbdQSWONlUQcE5xzbHY8SE1rXO9cFZyeniaxZhhm2EcRCyVkURJhpfKjVxIRH8axPDs7+1VHtgauCnK53AcussEpCa1UKgkAiGKxKLgH9NkxjD88PNxHIomWBEdHR58RvGZnxcwIBlBZLpcFjNXwDpBAZU6iVCoVGxwc/NuSAG9LeWdn5wmyLQDEALi6TJTIypw9/ayCc8bBwcEqKn83PT3t2gOXRMxgfn5+bX19/QGegRwAVAUAq/f0wQR7gH9NJpOPlpaW/jiz53/XJtNJeXBKliHH7aGhodfhcHgEL6eBqtTzgMsmCoVCcWVl5S0kfYOqf3OdtnGDmtnMzMwINtjE8yx3d3fN7e1tube3J+Px+P7o6Ghvs7Wc00rUmAmydenKeT4R6Jp+CxinlYgTmla/UJq5C10tK2hYef524KLBZ48bpvXDlgTY2JJuKY5qBa+sXZUuRPlaSpROp1dnZ2cf4xsRxckJ4ibz+f6ytbX1Egj5C5GtCe0XTbdofHy8H0d3GGe/gKf7E45mVhfn9F2awLnwsv//AfZ2Ms7jYoK5AAAAAElFTkSuQmCC);}
+
+
+
+#PrefsButton {background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAASNSURBVHjatFZdaFRXEP7merO70SSN68bUdGN/sq64ppKfakSSpg9iGkGwSaGVClF8CEhfWqqBpqK0IIRSSPFJghSL9KHFlEZNGtFmo0nXshHSNVvrX40KoWZXSROSrCfHmT7svZuNTbQvXrhwz5nLzHzffDPnkIjgeT7G04xERJcNY8vVsrKvThHV2HtDPl/zYE7O/u+IVj0rgPk0YzOQWXDo0GkA5pqCgre/Jqq8ABTn1tV9DmYqPnFiUyPRu0dF9P8O0EnkdgCvXwb6sgERpRgAMtetW7P55s1jrkBgNbQmYQYnEkYVQCeIFr8IVP4N9OwUmVkwQCeRO7B793mH17uuoKOjPTE0FBStTQAQZnph69btwkysFMAsrkDA/3IotGtFbe1+c/nyItfx44cbiQ6lI6L0IncSVZccOPALABKtCcwQZoBZwEyitQgzQWvI7B7ALMJM04ODf52KRjc2icTmLfIVoG+svb1dtIZoLaK1QGsRpcBKiSgFUUosW+of0RqSSPClaLR1M9GD/6iIiOgzosUAHJPRaFCUArQm0ZpYqWSWyTWsN4kiaSPRGjoen5wALp4TcbYQZc6hKES0pXDfvtPQmoXZBGDYFIEZ00NDI9H+/rZhIOgCnOVAXV59fQMMw2nRaNOlAEAND9+xqHpoAEB2UVENko4dYDasjEW0lqlIZORMf//7N4AvPhYJ7hXpDgJ7fz95cq9ozSmKmAVABpgzMrxenwsoTlF0/dats1MDA1fZhqwULOj0RyjUNgP82iTy2IbdJPL4Z+Db6cHBPmFOIk0iJk4kdLy7u5uB0VSAOpHurt7eyn86On5M4xnQWoaBYLpz+zkqos/evr1jOhIZsNUmWqOnp6dpAHjvI5E/5xR5LVDs9PlWW8qBaC2sFFyAc6EuXQ9sNN1ujy1lYZYSoMwEsueoaDAvr9nX0BB0rFwZsJQBq8hUCrzTQrToSectRFme8vJW0+N5BcnsCVrT0urqD94qLY0cIVqfCpCIxZTFfUrXdpE9NTW7/EBDI1Gq638gyqpdseIb0+32CrOkNZsIM2AYWY/SZdpGtOqNJUu+FKUMl9/vd/r9fjCTBR1g5qlIpG9mZCRkuFzZrkBg26LcXC+sAlsyxcP+/gsCTIwB98PAJwdFxlKjopHIrAIoH9j16rZtR8FMAJByABCS2ZKVnKQlIToen/jp2rVNl4HrHkDseWSkqwJARmFFxX7MZm7PolllzbMWZizKzc0pAfZsADh92M2ZRUuAStPtLrIcsI7HJ2DzatFg8Zz6nhkdHbeCijc/v14ByxYc15NAz92ursN5hYU7Lt271zoFXKytrv4NhpFhUTNLCyAPQ6HeIPBhCbDnpby8+oux2KcOYM6woyfP5EYi8zVg6WaiB+dEnNurqsYAZEgioXvD4aa1QJmnomInmCUWDp9pBeo2AKyAZQ7gwZNNac7XoQBiAHCOCOru3TsOr9cXC4fPK+DYFeD7N8fHt5JpZk0A9z2AWE5H5z3Xn3WraCFyu4BiBkbt9j9CtP5RktIbB0XGnnpxeN7Xln8HABBRPkGOipQ1AAAAAElFTkSuQmCC);}
+
+
+
+#body {cursor:url(;),default;}
+
+
+
+a, .plink, .button, .buttonback, .dialogButton, .input_butt, #printImage, .imgbutton, #printTitle, #showImageButton {cursor:url(;),pointer;}
+
+
+
+ #printCont, #printAdd, #printImage, #menu, .h1, .wind {border-width:10px; border-style:solid; border-color:transparent; border-image:url(;) 10 round;}
+
+
+
+@media only screen and (max-width:599px), only screen and (max-height:599px) {
+
+
+
+ #printCont, #printImage, #menu, .h1 {border-width:0; border-image:none;}
+
+
+
+}
+
+
+
+@media only screen and (min-width:600px) and (min-height:600px) {
+
+
+
+ #body, input {font-size:100%;}
+
+
+
+ #printHelper {position:absolute; top:0; bottom:0; left:0; right:0; padding:56px 20px;}
+
+
+
+ #printCont {position:static; margin:0 auto; max-width:728px; height:100%;}
+
+
+
+ #print {max-width:100%;}
+
+
+
+ #printImage {top:112px; bottom:112px; left:76px; right:76px;}
+
+
+
+ #menu {border-width:0; border-image:none;}
+
+
+
+}
+
